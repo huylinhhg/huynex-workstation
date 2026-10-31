@@ -1,7 +1,7 @@
 <#
 .SYNOPSIS
     HuyNex Power-User Workstation 1-Click Installer for Windows
-    GitHub: https://github.com/huylinhhg/huynex-poweruser
+    GitHub: https://github.com/huylinhhg/huynex-workstation
 .DESCRIPTION
     Tối ưu hóa bàn phím Zero-Latency, cài đặt bộ công cụ CLI Rust hiện đại,
     cấu hình PowerShell Profile và cài đặt Antigravity Skill.
@@ -53,7 +53,7 @@ if (Get-Command winget -ErrorAction SilentlyContinue) {
 Write-Host "`n[3/5] Cài đặt công cụ bảo trì 1-Click (huynex-clean.ps1)..." -ForegroundColor Yellow
 $binDir = "$HOME\.local\bin"
 if (!(Test-Path $binDir)) { New-Item -ItemType Directory -Path $binDir -Force | Out-Null }
-$cleanScriptUrl = "https://raw.githubusercontent.com/huylinhhg/huynex-poweruser/main/bin/huynex-clean.ps1"
+$cleanScriptUrl = "https://raw.githubusercontent.com/huylinhhg/huynex-workstation/main/bin/huynex-clean.ps1"
 Invoke-WebRequest -Uri $cleanScriptUrl -OutFile "$binDir\huynex-clean.ps1"
 Write-Host "  ✔ Đã tải huynex-clean.ps1 vào $binDir\huynex-clean.ps1" -ForegroundColor Green
 
@@ -104,7 +104,7 @@ if ($currentProfile -match $startEsc) {
 Write-Host "`n[5/5] Cài đặt Antigravity Skill (poweruser-workstation)..." -ForegroundColor Yellow
 $skillDir = "$HOME\.gemini\config\skills\poweruser-workstation"
 if (!(Test-Path $skillDir)) { New-Item -ItemType Directory -Path $skillDir -Force | Out-Null }
-$skillUrl = "https://raw.githubusercontent.com/huylinhhg/huynex-poweruser/main/skill/SKILL.md"
+$skillUrl = "https://raw.githubusercontent.com/huylinhhg/huynex-workstation/main/skill/SKILL.md"
 Invoke-WebRequest -Uri $skillUrl -OutFile "$skillDir\SKILL.md"
 Write-Host "  ✔ Đã cài đặt skill vào $skillDir\SKILL.md" -ForegroundColor Green
 
@@ -114,7 +114,7 @@ Write-Host "  ✔ Đã cài đặt skill vào $skillDir\SKILL.md" -ForegroundCol
 Write-Host "`n=================================================================" -ForegroundColor Cyan
 Write-Host "   ✨ NÂNG CẤP HOÀN TẤT - BẠN ĐÃ LÀ TOP 1% POWER-USER! ✨" -ForegroundColor Green
 Write-Host "=================================================================" -ForegroundColor Cyan
-Write-Host "Các cải tiến đã được kích hoạt trên máy của bạn:" -ForegroundColor Yellow
+Write-Host "Các cải tiến đã được kích hoạt trên máy của bạn (100% Free):" -ForegroundColor Yellow
 Write-Host "  1. Zero-Latency Bàn phím: Tốc độ lướt phím và xóa chữ nhanh gấp 6 lần." -ForegroundColor White
 Write-Host "  2. Kỷ nguyên CLI Rust: Dùng 'z' (nhảy thư mục), 'ls' (eza màu sắc/icon), 'cat' (bat highlight code), 'grep' (ripgrep siêu tốc)." -ForegroundColor White
 Write-Host "  3. Bảo trì 1-Click: Gõ lệnh 'clean' hoặc 'huynex-clean' để dọn sạch máy trong 3s." -ForegroundColor White

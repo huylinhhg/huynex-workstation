@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # ==============================================================================
 # HuyNex Power-User Workstation 1-Click Installer for macOS
-# GitHub: https://github.com/huylinhhg/huynex-poweruser
+# GitHub: https://github.com/huylinhhg/huynex-workstation
 # 100% Free & Open Source - Zero Cost - Zero Bloat
 # ==============================================================================
 set -e
@@ -84,7 +84,7 @@ echo -e "  ${GREEN}✔ Đã triệt tiêu delay Dock & Window animations (Zero-L
 # 5. Cài đặt kịch bản bảo trì tự động huynex-clean
 echo -e "\n${CYAN}[4/5] Cài đặt công cụ bảo trì 1-Click (huynex-clean)...${NC}"
 mkdir -p "$HOME/.local/bin"
-curl -fsSL https://raw.githubusercontent.com/huylinhhg/huynex-poweruser/main/bin/huynex-clean -o "$HOME/.local/bin/huynex-clean"
+curl -fsSL https://raw.githubusercontent.com/huylinhhg/huynex-workstation/main/bin/huynex-clean -o "$HOME/.local/bin/huynex-clean"
 chmod +x "$HOME/.local/bin/huynex-clean"
 echo -e "  ${GREEN}✔ Đã cài đặt huynex-clean vào ~/.local/bin/huynex-clean${NC}"
 
@@ -136,7 +136,7 @@ fi
 # 7. Cài đặt Antigravity Skill
 SKILL_DIR="$HOME/.gemini/config/skills/poweruser-workstation"
 mkdir -p "$SKILL_DIR"
-curl -fsSL https://raw.githubusercontent.com/huylinhhg/huynex-poweruser/main/skill/SKILL.md -o "$SKILL_DIR/SKILL.md" 2>/dev/null || true
+curl -fsSL https://raw.githubusercontent.com/huylinhhg/huynex-workstation/main/skill/SKILL.md -o "$SKILL_DIR/SKILL.md" 2>/dev/null || true
 
 # ==============================================================================
 # BÁO CÁO KẾT QUẢ HOÀN TẤT
