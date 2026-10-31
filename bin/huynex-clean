@@ -1,0 +1,78 @@
+#!/bin/bash
+# ==============================================================================
+# HuyNex Clean - Automated Maintenance & System Tuning for Power-Users
+# ==============================================================================
+set -e
+
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+YELLOW='\033[1;33m'
+CYAN='\033[0;36m'
+NC='\033[0m' # No Color
+
+echo -e "${BLUE}=================================================================${NC}"
+echo -e "${GREEN}   ⚡ HuyNex System Optimizer & Auto-Cleaner (macOS M1) ⚡${NC}"
+echo -e "${BLUE}=================================================================${NC}"
+
+# Measure initial disk space
+INITIAL_AVAIL=$(df -h / | awk 'NR==2 {print $4}')
+echo -e "${CYAN}→ Dung lượng SSD khả dụng ban đầu:${NC} ${YELLOW}$INITIAL_AVAIL${NC}\n"
+
+# 1. Clean Package Managers
+echo -e "${CYAN}[1/6] Dọn dẹp bộ nhớ đệm Package Managers (Brew, npm, pip)...${NC}"
+if command -v brew &>/dev/null; then
+    brew cleanup -s --prune=all &>/dev/null || true
+    echo -e "  ✔ Homebrew cache cleaned"
+fi
+if command -v npm &>/dev/null; then
+    npm cache clean --force &>/dev/null || true
+    echo -e "  ✔ npm cache cleaned"
+fi
+if command -v pip3 &>/dev/null; then
+    pip3 cache purge &>/dev/null || true
+    echo -e "  ✔ pip cache cleaned"
+fi
+
+# 2. Clean Xcode & Dev Caches
+echo -e "${CYAN}[2/6] Dọn dẹp cache phát triển (Xcode, build artifacts)...${NC}"
+if [ -d "$HOME/Library/Developer/Xcode/DerivedData" ]; then
+    rm -rf "$HOME/Library/Developer/Xcode/DerivedData"/* 2>/dev/null || true
+    echo -e "  ✔ Xcode DerivedData cleaned"
+fi
+
+# 3. Clean System Logs & Diagnostic Reports older than 7 days
+echo -e "${CYAN}[3/6] Dọn dẹp log và báo cáo lỗi cũ (>7 ngày)...${NC}"
+find "$HOME/Library/Logs" -type f -mtime +7 -delete 2>/dev/null || true
+echo -e "  ✔ Old logs removed"
+
+# 4. Clean Application Caches & Temp files
+echo -e "${CYAN}[4/6] Dọn dẹp temp & cache của các ứng dụng đa phương tiện...${NC}"
+# CapCut draft cache & media cache
+rm -rf "$HOME/Library/Containers/com.lemon.lvoverseas/Data/Library/Caches"/* 2>/dev/null || true
+# Zalo temp avatar / updates
+rm -rf "$HOME/Library/Application Support/Zalo/temp"/* 2>/dev/null || true
+rm -rf "$HOME/Library/Application Support/ZaloData/temp"/* 2>/dev/null || true
+# Google Chrome shader / media cache
+rm -rf "$HOME/Library/Caches/Google/Chrome/Default/Media Cache"/* 2>/dev/null || true
+echo -e "  ✔ App caches purged"
+
+# 5. Clean .DS_Store files across HuyNex workspace
+echo -e "${CYAN}[5/6] Dọn dẹp file rác .DS_Store trong HuyNex...${NC}"
+find "$HOME/HuyNex" -name ".DS_Store" -delete 2>/dev/null || true
+echo -e "  ✔ .DS_Store purged"
+
+# 6. Empty Trash
+echo -e "${CYAN}[6/6] Dọn sạch Thùng rác (.Trash)...${NC}"
+rm -rf "$HOME/.Trash"/* 2>/dev/null || true
+echo -e "  ✔ Trash emptied"
+
+# Measure final disk space
+FINAL_AVAIL=$(df -h / | awk 'NR==2 {print $4}')
+
+echo -e "\n${BLUE}=================================================================${NC}"
+echo -e "${GREEN}   ✨ BẢO TRÌ HOÀN TẤT - HỆ THỐNG ĐÃ TỐI ƯU ✨${NC}"
+echo -e "${BLUE}=================================================================${NC}"
+echo -e "SSD khả dụng: ${YELLOW}$INITIAL_AVAIL${NC} → ${GREEN}$FINAL_AVAIL${NC}"
+echo -e "Trạng thái RAM:"
+vm_stat | perl -ne '/page size of (\d+)/ and $size=$1; /(Pages free|Pages active|Pages inactive|Pages speculative|Pages wired down|Pages occupied by compressor):\s+(\d+)/ and $mem{$1}=$2*$size; END { printf "  • RAM thực trống (Free + Inactive): %.2f GB\n", ($mem{"Pages free"}+$mem{"Pages inactive"})/1024/1024/1024; printf "  • RAM nén (Compressed): %.2f GB\n", $mem{"Pages occupied by compressor"}/1024/1024/1024 }'
+echo -e "${BLUE}=================================================================${NC}\n"
