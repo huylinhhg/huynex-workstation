@@ -3,8 +3,8 @@ chcp 65001 >nul
 title HuyNex Workstation 1-Click Setup (Windows)
 cls
 echo =================================================================
-echo    ⚡ HUYNEX WORKSTATION 1-CLICK SETUP (Windows) ⚡
-echo    Dang keo ban cai dat moi nhat tu GitHub huynex-workstation...
+echo    HUYNEX WORKSTATION 1-CLICK SETUP (WINDOWS)
+echo    Dang ket noi GitHub va tai ban toi uu moi nhat...
 echo =================================================================
 echo.
 
@@ -14,7 +14,7 @@ echo.
 echo =================================================================
 echo    HOAN TAT CAI DAT VA TOI UU HE THONG!
 echo =================================================================
-echo Ban co muon xoa thu muc cai dat tam nay de may gon gang 100%% khong?
+echo Ban co muon xoa thu muc cai dat tam nay cho may gon gang khong?
 echo    [Enter] = Xoa ngay (Gon gang sach se)
 echo    [n]     = Giu lai (De sau nay chay lai khi can cap nhat)
 set /p delchoice="Lua chon cua ban [Y/n]: "

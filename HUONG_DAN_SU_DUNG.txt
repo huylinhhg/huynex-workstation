@@ -1,0 +1,41 @@
+================================================================================
+HUYNEX WORKSTATION 1-CLICK - HUONG DAN SU DUNG SIEU DON GIAN
+================================================================================
+
+Chao ban! Day la bo kich ban tu dong toi uu hoa may tinh theo chuan cua Top 1%
+Ky su cong nghe:
+1. KIEM TRA RAM & PHAN TICH: Tu dong do RAM, phan tich top ung dung chiem RAM.
+2. TAT TAN GOC TAC VU NGAM: Tu dong diet va vo hieu hoa cac tien trinh/dich vu
+   chay ngam 24/7 (Adobe, CleanMyMac, Google Update, Edge Update, Telemetry).
+3. TANG TOC BAN PHIM & MAN HINH: Triet tieu do tre, tang toc phan hoi (Zero-Latency).
+4. BO CONG CU DONG LENH RUST: Trang bi zoxide, eza, bat, fzf, ripgrep (100% Free).
+5. TICH HOP BAO TRI 1-CLICK & AI ANTIGRAVITY.
+
+100% Mien phi • Ma nguon mo • Khong loi font • Zero-Bloat • Ho tro ca may moi tinh
+
+--------------------------------------------------------------------------------
+👉 CACH DUNG (CHI 1 BUOC DUY NHAT):
+--------------------------------------------------------------------------------
+
+[ DÀNH CHO MÁY MAC ]:
+   1. Nhap dup chuot vao file: Cai-dat-Mac.command
+   2. (Neu macOS bao ve file tai tu Zalo: Chuot phai vao file -> Chon Open -> Open).
+   3. Terminal se tu dong ket noi GitHub lay ban toi uu moi nhat ve cai dat.
+   4. Cai xong, ban chi can nhan Enter de tu dong xoa sach thu muc nay cho gon may!
+
+[ DÀNH CHO MÁY WINDOWS ]:
+   1. Nhap dup chuot vao file: Cai-dat-Windows.cmd
+   2. Cua so se tu dong quet RAM, tat service ngam va thiet lap trong 30 giay.
+   3. Cai xong, nhan Enter de tu dong xoa gon gang thu muc cai dat nay.
+
+--------------------------------------------------------------------------------
+🛡️ CAM KET BAO MAT & MINH BACH (ZERO-DAEMON & ZERO-TELEMETRY):
+--------------------------------------------------------------------------------
+- Tuyet doi KHONG cai dat bat ky tien trinh chay ngam nao 24/7.
+- Tuyet doi KHONG thu thap hay gui bat ky du lieu nao ra ben ngoai.
+- Minh bach 100%: Ban co the mo cac file bang Notepad de doc tung dong lenh.
+- Tu dong don sach sau khi cai, khong de lai bat ky file rac nao tren may.
+
+Ma nguon cong khai: https://github.com/huylinhhg/huynex-workstation
+Chuc ban co trai nghiem lam viec sieu muot ma! 🚀
+================================================================================

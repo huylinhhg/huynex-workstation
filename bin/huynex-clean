@@ -1,6 +1,7 @@
 #!/bin/bash
 # ==============================================================================
 # HuyNex Clean - Automated Maintenance & System Tuning for Power-Users
+# 100% Free - Khong loi font - Do RAM truoc va sau don dep
 # ==============================================================================
 set -e
 
@@ -11,15 +12,14 @@ CYAN='\033[0;36m'
 NC='\033[0m' # No Color
 
 echo -e "${BLUE}=================================================================${NC}"
-echo -e "${GREEN}   ⚡ HuyNex System Optimizer & Auto-Cleaner (macOS M1) ⚡${NC}"
+echo -e "${GREEN}   HUYNEX SYSTEM OPTIMIZER & AUTO-CLEANER (macOS) ⚡${NC}"
 echo -e "${BLUE}=================================================================${NC}"
 
-# Measure initial disk space
 INITIAL_AVAIL=$(df -h / | awk 'NR==2 {print $4}')
-echo -e "${CYAN}→ Dung lượng SSD khả dụng ban đầu:${NC} ${YELLOW}$INITIAL_AVAIL${NC}\n"
+echo -e "${CYAN}-> Dung luong SSD kha dung ban dau:${NC} ${YELLOW}$INITIAL_AVAIL${NC}\n"
 
-# 1. Kill Rogue Background Daemons & Processes (Adobe, CleanMyMac, Updaters)
-echo -e "${CYAN}[1/7] Quét & Tắt sạch các tác vụ/tiến trình chạy ngầm (Zero-Bloat)...${NC}"
+# 1. Dong cac tien trinh chay ngam
+echo -e "${CYAN}[1/7] Quet va dong cac tien trinh chay ngam chiem RAM...${NC}"
 BLOAT_PROCESSES=(
     "AdobeIPCBroker"
     "CCLibrary"
@@ -39,24 +39,23 @@ KILLED_COUNT=0
 for proc in "${BLOAT_PROCESSES[@]}"; do
     if pgrep -fi "$proc" &>/dev/null; then
         pkill -9 -fi "$proc" 2>/dev/null || true
-        echo -e "  ✔ Đã tắt tiến trình ngầm: $proc"
+        echo -e "  ✔ Da dong tien trinh ngam: $proc"
         ((KILLED_COUNT++)) || true
     fi
 done
 
-# Clean persistent rogue LaunchAgents in user space
 for pattern in "com.macpaw.CleanMyMac*" "com.google.keystone*" "com.coccoc*" "com.adobe.*" "com.microsoft.update*"; do
     for plist in "$HOME/Library/LaunchAgents"/$pattern.plist; do
         if [ -f "$plist" ]; then
             launchctl unload -w "$plist" 2>/dev/null || true
             rm -f "$plist"
-            echo -e "  ✔ Đã gỡ bỏ LaunchAgent: $(basename "$plist")"
+            echo -e "  ✔ Da go bo LaunchAgent: $(basename "$plist")"
         fi
     done
 done
 
-# 2. Clean Package Managers
-echo -e "${CYAN}[2/7] Dọn dẹp bộ nhớ đệm Package Managers (Brew, npm, pip)...${NC}"
+# 2. Package Managers Cache
+echo -e "${CYAN}[2/7] Don dep bo nho dem Package Managers (Brew, npm, pip)...${NC}"
 if command -v brew &>/dev/null; then
     brew cleanup -s --prune=all &>/dev/null || true
     echo -e "  ✔ Homebrew cache cleaned"
@@ -70,46 +69,42 @@ if command -v pip3 &>/dev/null; then
     echo -e "  ✔ pip cache cleaned"
 fi
 
-# 3. Clean Xcode & Dev Caches
-echo -e "${CYAN}[3/7] Dọn dẹp cache phát triển (Xcode, build artifacts)...${NC}"
+# 3. Xcode & Dev Caches
+echo -e "${CYAN}[3/7] Don dep cache phat trien (Xcode, build artifacts)...${NC}"
 if [ -d "$HOME/Library/Developer/Xcode/DerivedData" ]; then
     rm -rf "$HOME/Library/Developer/Xcode/DerivedData"/* 2>/dev/null || true
     echo -e "  ✔ Xcode DerivedData cleaned"
 fi
 
-# 4. Clean System Logs & Diagnostic Reports older than 7 days
-echo -e "${CYAN}[4/7] Dọn dẹp log và báo cáo lỗi cũ (>7 ngày)...${NC}"
+# 4. Old Logs (>7 days)
+echo -e "${CYAN}[4/7] Don dep log va bao cao loi cu (>7 ngay)...${NC}"
 find "$HOME/Library/Logs" -type f -mtime +7 -delete 2>/dev/null || true
 echo -e "  ✔ Old logs removed"
 
-# 5. Clean Application Caches & Temp files
-echo -e "${CYAN}[5/7] Dọn dẹp temp & cache của các ứng dụng đa phương tiện...${NC}"
-# CapCut draft cache & media cache
+# 5. Application Caches & Temp files
+echo -e "${CYAN}[5/7] Don dep temp va cache cac ung dung...${NC}"
 rm -rf "$HOME/Library/Containers/com.lemon.lvoverseas/Data/Library/Caches"/* 2>/dev/null || true
-# Zalo temp avatar / updates
 rm -rf "$HOME/Library/Application Support/Zalo/temp"/* 2>/dev/null || true
 rm -rf "$HOME/Library/Application Support/ZaloData/temp"/* 2>/dev/null || true
-# Google Chrome shader / media cache
 rm -rf "$HOME/Library/Caches/Google/Chrome/Default/Media Cache"/* 2>/dev/null || true
 echo -e "  ✔ App caches purged"
 
-# 6. Clean .DS_Store files across HuyNex workspace
-echo -e "${CYAN}[6/7] Dọn dẹp file rác .DS_Store trong HuyNex...${NC}"
+# 6. .DS_Store
+echo -e "${CYAN}[6/7] Don dep file tam .DS_Store trong workspace...${NC}"
 find "$HOME/HuyNex" -name ".DS_Store" -delete 2>/dev/null || true
 echo -e "  ✔ .DS_Store purged"
 
-# 7. Empty Trash
-echo -e "${CYAN}[7/7] Dọn sạch Thùng rác (.Trash)...${NC}"
+# 7. Trash
+echo -e "${CYAN}[7/7] Don sach Thung rac (.Trash)...${NC}"
 rm -rf "$HOME/.Trash"/* 2>/dev/null || true
 echo -e "  ✔ Trash emptied"
 
-# Measure final disk space
 FINAL_AVAIL=$(df -h / | awk 'NR==2 {print $4}')
 
 echo -e "\n${BLUE}=================================================================${NC}"
-echo -e "${GREEN}   ✨ BẢO TRÌ HOÀN TẤT - HỆ THỐNG ĐÃ TỐI ƯU ✨${NC}"
+echo -e "${GREEN}   BAO TRI HOAN TAT - HE THONG DA TOI UU${NC}"
 echo -e "${BLUE}=================================================================${NC}"
-echo -e "SSD khả dụng: ${YELLOW}$INITIAL_AVAIL${NC} → ${GREEN}$FINAL_AVAIL${NC}"
-echo -e "Trạng thái RAM:"
-vm_stat | perl -ne '/page size of (\d+)/ and $size=$1; /(Pages free|Pages active|Pages inactive|Pages speculative|Pages wired down|Pages occupied by compressor):\s+(\d+)/ and $mem{$1}=$2*$size; END { printf "  • RAM thực trống (Free + Inactive): %.2f GB\n", ($mem{"Pages free"}+$mem{"Pages inactive"})/1024/1024/1024; printf "  • RAM nén (Compressed): %.2f GB\n", $mem{"Pages occupied by compressor"}/1024/1024/1024 }'
+echo -e "SSD kha dung: ${YELLOW}$INITIAL_AVAIL${NC} -> ${GREEN}$FINAL_AVAIL${NC}"
+echo -e "Trang thai RAM thuc te:"
+vm_stat | perl -ne '/page size of (\d+)/ and $size=$1; /(Pages free|Pages active|Pages inactive|Pages speculative|Pages wired down|Pages occupied by compressor):\s+(\d+)/ and $mem{$1}=$2*$size; END { printf "  • RAM thuc tu do (Free + Inactive): %.2f GB\n", ($mem{"Pages free"}+$mem{"Pages inactive"})/1024/1024/1024; printf "  • RAM nen (Compressed): %.2f GB\n", $mem{"Pages occupied by compressor"}/1024/1024/1024 }'
 echo -e "${BLUE}=================================================================${NC}\n"

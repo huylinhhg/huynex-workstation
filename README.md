@@ -1,8 +1,8 @@
 # ⚡ HuyNex Zero-Latency Power-User Workstation ⚡
 
-Biến bất kỳ máy tính **macOS** hoặc **Windows** nào thành cỗ máy phản xạ tức thì, siêu nhẹ và tinh gọn của **Top 1% Kỹ sư công nghệ / Tech-Lead hàng đầu thế giới**. Tích hợp sẵn kỹ năng AI cho Antigravity.
+Bien bat ky may tinh **macOS** hoac **Windows** nao thanh co may phan xa tuc thi, sieu nhe va tinh gon cua **Top 1% Ky su cong nghe / Tech-Lead hang dau the gioi**. Tich hop san ky nang AI cho Antigravity.
 
-**100% Miễn phí • Tắt sạch tác vụ ngầm • Không trả phí • Không thuê bao • Zero-Bloat**
+**100% Mien phi • Khong loi font • Tat sach tac vu ngam • Do RAM thong minh • Zero-Bloat**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/Platform-macOS%20%7C%20Windows-green.svg)](README.md)
@@ -10,99 +10,88 @@ Biến bất kỳ máy tính **macOS** hoặc **Windows** nào thành cỗ máy 
 
 ---
 
-## 🚀 CÀI ĐẶT 1 DÒNG DUY NHẤT (QUICK INSTALL)
+## 🚀 CAI DAT 1 DONG DUY NHAT (QUICK INSTALL)
 
-### 🍎 Dành cho macOS
-Mở Terminal và dán đúng 1 dòng lệnh sau:
+### 🍎 Danh cho macOS
+Mo Terminal va dan dung 1 dong lenh sau:
 ```bash
 curl -fsSL https://raw.githubusercontent.com/huylinhhg/huynex-workstation/main/setup-mac.sh | bash
 ```
 
-### 🪟 Dành cho Windows
-Mở PowerShell (Run as Administrator hoặc Standard) và dán đúng 1 dòng lệnh sau:
+### 🪟 Danh cho Windows
+Mo PowerShell (Run as Administrator hoac Standard) va dan dung 1 dong lenh sau:
 ```powershell
 irm https://raw.githubusercontent.com/huylinhhg/huynex-workstation/main/setup-windows.ps1 | iex
 ```
 
 ---
 
-## 📦 HOẶC GỬI FILE ZIP CẦU NỐI 1-CLICK (GỬI QUA ZALO)
+## 📦 HOAC GUI FILE ZIP CAU NOI 1-CLICK (GUI QUA ZALO)
 
-Bạn chỉ cần gửi file zip siêu nhẹ (`~4 KB`) cho bạn bè. Người nhận chỉ việc giải nén ra màn hình:
-- **Nếu dùng máy Mac:** Bấm đúp vào file `🍎 Cai-dat-Mac.command`
-- **Nếu dùng máy Windows:** Bấm đúp vào file `🪟 Cai-dat-Windows.cmd`
+Ban chi can gui file zip sieu nhe (`~4 KB`) cho ban be. Nguoi nhan chi viec giai nen ra man hinh:
+- **Neu dung may Mac:** Bam dup vao file `Cai-dat-Mac.command`
+- **Neu dung may Windows:** Bam dup vao file `Cai-dat-Windows.cmd`
 
-Máy sẽ tự động kết nối GitHub kéo bản cài đặt và tối ưu mới nhất về chạy, hoàn tất trong 30 giây và tự động dọn dẹp thư mục cài đặt sạch sẽ sau khi xong!
-
----
-
-## ✨ CÁC TÍNH NĂNG ĐƯỢC KÍCH HOẠT TỰ ĐỘNG
-
-| Hạng mục | Trước khi cài | Sau khi cài (HuyNex Standard) | Lợi ích thực tế |
-| :--- | :--- | :--- | :--- |
-| **Tác vụ chạy ngầm** | Hàng chục daemon ngầm (Adobe, CleanMyMac, Updaters, Telemetry) ăn ngầm 2-4 GB RAM | **TẮT SẠCH TẬN GỐC (Zero-Bloat)**: Diệt tiến trình & vô hiệu hóa tự khởi động 24/7 | Máy mát mẻ, CPU 0%, giải phóng hàng GB RAM thực |
-| **Tốc độ lướt phím** | Chậm mặc định (Apple / Win) | **Siêu tốc** (`KeyRepeat = 2`, `Delay = 0`) | Lướt con trỏ, xóa chữ nhanh gấp 6 lần |
-| **Độ trễ màn hình** | Trễ hoạt ảnh Dock / Cửa sổ | **Zero-Latency** (0s delay, tắt animation thừa) | Mở cửa sổ, ẩn hiện Dock ngay lập tức |
-| **Dòng lệnh CLI** | `ls`, `cat`, `cd`, `grep` cổ điển | **Kỷ nguyên Rust:** `z`, `eza`, `bat`, `ripgrep`, `fzf` | Nhảy thư mục tức thì, code highlight màu sắc |
-| **Bảo trì 1-Click** | Mở app dọn rác nặng nề | Lệnh `clean` / `huynex-clean` | Dọn sạch rác, cache dev và tác vụ ngầm trong 3 giây |
-| **Antigravity AI** | Chưa có hướng dẫn chuẩn | Skill `poweruser-workstation` tích hợp sẵn | Trong chat AI: gõ *"Tối ưu máy"* là AI tự làm |
+May se tu dong ket noi GitHub keo ban cai dat va toi uu moi nhat ve chay, hoan tat trong 30 giay va tu dong don dep thu muc cai dat sach se sau khi xong!
 
 ---
 
-## 🛡️ CHI TIẾT TẮT TÁC VỤ CHẠY NGẦM
+## ✨ CO CHE HOAT DONG THONG MINH (DO RAM & BAO QUAT HE THONG)
 
-### Trên macOS:
-1. **Diệt sạch tiến trình ngầm ăn RAM:** Adobe CCLibrary (`node`), Adobe IPCBroker, CoreSync, CleanMyMac HealthMonitor/Menu, Google Software Update Agent, Cốc Cốc Updater, Microsoft AU Daemon.
-2. **Vô hiệu hóa LaunchAgents:** Xóa bỏ các tập tin `.plist` tự khởi động ngầm trong `~/Library/LaunchAgents`.
-3. **Tắt CrashReporter Dialogs & App Resume:** Ngăn ngừa việc khôi phục các cửa sổ lỗi gây đơ máy khi khởi động lại.
-
-### Trên Windows:
-1. **Vô hiệu hóa vĩnh viễn Services ngầm:** Google Update (`gupdate`, `gupdatem`), Edge Update (`edgeupdate`, `edgeupdatem`), Adobe Acrobat Update (`AdobeARMservice`), Windows Telemetry (`DiagTrack`), WAP Push (`dmwappushservice`).
-2. **Đóng tiến trình ngầm:** `GoogleUpdate.exe`, `MicrosoftEdgeUpdate.exe`, `AdobeARM.exe`.
-3. **Triệt tiêu Telemetry & Bloat tìm kiếm:** Tắt thu thập dữ liệu trong Registry, tắt Bing Search và Cortana chạy ngầm trong Start Menu.
+1. **Tu dong do RAM va phan tich Top ung dung chiem RAM:**
+   - Kiem tra tong RAM, RAM dang su dung, RAM con trong.
+   - Liet ke Top 5 tien trinh/ung dung dang chiem dung RAM cao nhat tren may.
+2. **Triet tieu tac vu & dich vu chay ngam (Zero-Bloat):**
+   - **Mac:** Diet Adobe CCLibrary, IPCBroker, CoreSync, CleanMyMac Monitors, Google & Coccoc Updaters, go bo LaunchAgents.
+   - **Windows:** Vo hieu hoa vinh vien Google Update, Edge Update, AdobeARMservice, Telemetry (DiagTrack), MapsBroker, tat Tasks lich khoi dong ngam.
+3. **Tu thich ung voi ca "May trang" (may moi mua) lan "May day ung dung":**
+   - May moi chua co app rac: Bao cao he thong sach se, tu dong cai Homebrew / winget va toolchain Rust.
+   - May cu co nhieu app: Tu dong don sach dich vu ngam, liet ke app ngam de giai phong tai nguyen.
+4. **100% Chuan ASCII - Khong bao gio bi loi font tieng Viet:**
+   - Toan bo thong bao trong Terminal / PowerShell su dung tieng Viet khong dau chuan ASCII, dam bao khong bi bien thanh ky tu la `???` hay loi ma hoa CodePage tren bat ky may Windows nao.
 
 ---
 
-## 🛠 HƯỚNG DẪN SỬ DỤNG BỘ CÔNG CỤ MỚI
+## 🛠 HUONG DAN SU DUNG BO CONG CU MOI
 
-### 1. Nhảy thư mục siêu tốc với `z` (thay vì `cd`)
+### 1. Nhay thu muc sieu toc voi `z` (thay vi `cd`)
 ```bash
-z my-project    # Nhảy ngay đến thư mục my-project
-z docs          # Nhảy ngay đến thư mục documents
+z my-project    # Nhay ngay den thu muc my-project
+z docs          # Nhay ngay den thu muc documents
 ```
 
-### 2. Liệt kê file tuyệt đẹp với `ls` & `ll` (`eza`)
+### 2. Liet ke file tuyet dep voi `ls` & `ll` (`eza`)
 ```bash
-ls              # Xem file kèm icon và màu sắc
-ll              # Xem quyền hạn, kích thước và trạng thái Git
-lt              # Xem cây thư mục trực quan (tree view)
+ls              # Xem file kem icon va mau sac
+ll              # Xem quyen han, kich thuoc va trang thai Git
+lt              # Xem cay thu muc truc quan (tree view)
 ```
 
-### 3. Đọc file có highlight cú pháp với `cat` (`bat`)
+### 3. Doc file co highlight cu phap voi `cat` (`bat`)
 ```bash
-cat index.js    # Xem code có số dòng, highlight màu sắc và bảng kẻ
+cat index.js    # Xem code co so dong, highlight mau sac va bang ke
 ```
 
-### 4. Tìm kiếm file siêu tốc với `fzf` & `grep` (`ripgrep`)
+### 4. Tim kiem file sieu toc voi `fzf` & `grep` (`ripgrep`)
 ```bash
-grep "my_func"  # Tìm kiếm trong toàn bộ mã nguồn nhanh gấp 10-50 lần
+grep "my_func"  # Tim kiem trong toan bo ma nguon nhanh gap 10-50 lan
 ```
 
-### 5. Dọn dẹp máy siêu tốc với 1 lệnh
+### 5. Don dep may sieu toc voi 1 lenh
 ```bash
-clean           # Hoặc gõ: huynex-clean
+clean           # Hoac go: huynex-clean
 ```
 
 ---
 
-## 🤖 TÍCH HỢP ANTIGRAVITY AI
+## 🤖 TICH HOP ANTIGRAVITY AI
 
-Kịch bản tự động cài đặt kỹ năng `poweruser-workstation` vào máy của bạn. Mỗi khi bạn mở Antigravity lên, bạn chỉ cần gõ:
-> *"Tối ưu máy cho tao"* hoặc *"Kiểm tra xem máy có rác không"*
+Kich ban tu dong cai dat ky nang `poweruser-workstation` vao may cua ban. Moi khi ban mo Antigravity len, ban chi can go:
+> *"Toi uu may cho tao"* hoac *"Kiem tra xem may co rac khong"*
 
-AI sẽ tự động kiểm tra RAM, diệt tác vụ ngầm, dọn dẹp bộ nhớ đệm và duy trì máy của bạn luôn ở trạng thái đỉnh cao nhất!
+AI se tu dong kiem tra RAM, diet tac vu ngam, don dep bo nho dem va duy tri may cua ban luon o trang thai dinh cao nhat!
 
 ---
 
 ## 📄 License
-Phát hành theo giấy phép **MIT License**. Tự do sử dụng, chỉnh sửa và chia sẻ cho cộng đồng.
+Phat hanh theo giay phep **MIT License**. Tu do su dung, chinh sua va chia se cho cong dong.
