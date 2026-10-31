@@ -2,6 +2,8 @@
 
 Biến bất kỳ máy tính **macOS** hoặc **Windows** nào thành cỗ máy phản xạ tức thì, siêu nhẹ và tinh gọn của **Top 1% Kỹ sư công nghệ / Tech-Lead hàng đầu thế giới**. Tích hợp sẵn kỹ năng AI cho **Antigravity**.
 
+**100% Miễn phí • Mã nguồn mở • Không trả phí • Không thuê bao • Zero-Bloat**
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/Platform-macOS%20%7C%20Windows-green.svg)]()
 [![Antigravity](https://img.shields.io/badge/Antigravity-Skill%20Ready-purple.svg)]()
@@ -30,7 +32,6 @@ irm https://raw.githubusercontent.com/huylinhhg/huynex-poweruser/main/install.ps
 |---|---|---|---|
 | **Tốc độ lướt phím** | Chậm mặc định (12 / 30) | **Siêu tốc (`KeyRepeat = 2`, `Initial = 10`)** | Lướt con trỏ, xóa code và sửa văn bản nhanh gấp **6 lần** |
 | **Độ trễ màn hình** | Trễ hoạt ảnh Dock 0.5s | **Zero-Latency (0s delay)** | Mở cửa sổ, ẩn/hiện Dock tức thì không độ trễ |
-| **Bộ não điều khiển** | Spotlight mặc định | **Raycast (macOS)** | Mở app, quản lý lịch sử Clipboard, tính toán, chia màn hình |
 | **Dòng lệnh CLI** | `ls`, `cat`, `cd` cổ điển | **Kỷ nguyên Rust: `z`, `eza`, `bat`, `fzf`, `rg`** | Nhảy thư mục 1 ký tự, xem file màu sắc, icon, highlight code |
 | **Bảo trì 1-Click** | Mở app dọn rác nặng nề | **Lệnh `clean` / `huynex-clean`** | Dọn sạch cache dev, log thừa, thùng rác trong 3 giây |
 | **Antigravity AI** | Chưa có hướng dẫn | **Skill `poweruser-workstation`** | Trong chat AI, chỉ cần nói *"Tối ưu máy"* là AI tự làm |

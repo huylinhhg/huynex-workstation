@@ -1,17 +1,16 @@
 ---
 name: poweruser-workstation
-description: Tự động tối ưu hóa toàn diện máy trạm (macOS & Windows) chuẩn Power-User / Zero-Latency UI: Tăng tốc phản hồi bàn phím, loại bỏ rác ngầm, cài đặt bộ công cụ CLI Rust hiện đại (zoxide, eza, bat, fzf, ripgrep), thiết lập Raycast/Profile và dọn dẹp hệ thống định kỳ. LUÔN kích hoạt skill này khi người dùng yêu cầu "tối ưu máy", "dọn dẹp máy", "làm máy mượt hơn", "setup máy chuẩn power user", "tăng tốc bàn phím", hoặc "huynex clean".
+description: Tự động tối ưu hóa toàn diện máy trạm (macOS & Windows) chuẩn Power-User / Zero-Latency UI: Tăng tốc phản hồi bàn phím, loại bỏ rác ngầm, cài đặt bộ công cụ CLI Rust hiện đại 100% miễn phí (zoxide, eza, bat, fzf, ripgrep), thiết lập Profile và dọn dẹp hệ thống định kỳ. LUÔN kích hoạt skill này khi người dùng yêu cầu "tối ưu máy", "dọn dẹp máy", "làm máy mượt hơn", "setup máy chuẩn power user", "tăng tốc bàn phím", hoặc "huynex clean".
 ---
 
 # HuyNex Power-User Workstation Skill
 
-Kỹ năng tự động hóa tối ưu và quản trị máy trạm hiệu năng cao cho người dùng Antigravity trên macOS và Windows.
+Kỹ năng tự động hóa tối ưu và quản trị máy trạm hiệu năng cao cho người dùng Antigravity trên macOS và Windows. Hoàn toàn 100% miễn phí, mã nguồn mở, không thuê bao, không phần mềm trả phí.
 
 ## 1. Triết lý vận hành (Core Principles)
-- **Zero-Bloat**: Tuyệt đối không để ứng dụng dọn dẹp hoặc updater daemon chạy ngầm 24/7 (như CleanMyMac, CCleaner). Chỉ chạy dọn dẹp theo yêu cầu (on-demand).
+- **Zero-Bloat & Zero-Cost**: Tuyệt đối không cài đặt hoặc chạy ngầm các ứng dụng dọn dẹp thương mại hoặc updater daemon 24/7 (như CleanMyMac, CCleaner). Không sử dụng các công cụ trả phí/thuê bao.
 - **Zero-Latency UI**: Triệt tiêu độ trễ hoạt ảnh của hệ điều hành, tối đa hóa tốc độ phản hồi phím (`KeyRepeat` tối đa).
-- **Modern CLI Toolchain**: Thay thế các công cụ UNIX thập niên 1970 bằng các công cụ viết bằng Rust siêu nhanh (`zoxide`, `eza`, `bat`, `fzf`, `ripgrep`).
-- **All-in-One Launcher**: Sử dụng Raycast trên macOS để làm trung tâm điều khiển (Clipboard History, Snippets, Window Management, App Launching).
+- **Modern CLI Toolchain**: Trang bị bộ công cụ mã nguồn mở viết bằng Rust siêu nhanh, miễn phí vĩnh viễn (`zoxide`, `eza`, `bat`, `fzf`, `ripgrep`).
 
 ## 2. Hướng dẫn hành động cho Antigravity Agent
 
@@ -28,9 +27,8 @@ Khi người dùng yêu cầu tối ưu hoặc kiểm tra máy:
 2. **Kiểm tra tiến trình ngầm**:
    - Rà soát các tiến trình ăn RAM và daemon updater trong `~/Library/LaunchAgents`.
    - Vô hiệu hóa hoặc báo người dùng tắt các dịch vụ giám sát chạy ngầm không cần thiết.
-3. **Cài đặt công cụ Power-User qua Homebrew**:
-   - Cài đặt: `brew install --cask raycast`
-   - Cài đặt: `brew install zoxide eza bat fzf ripgrep`
+3. **Cài đặt công cụ Power-User qua Homebrew (100% Free & Open Source)**:
+   - `brew install zoxide eza bat fzf ripgrep`
 4. **Cấu hình shell `~/.zshrc`**:
    - Nạp `zoxide init zsh` và `fzf --zsh`.
    - Thiết lập alias: `cd -> z`, `ls -> eza --icons --group-directories-first`, `ll -> eza -lah --icons --group-directories-first --git`, `cat -> bat --paging=never --style=plain`, `grep -> rg`.
@@ -41,7 +39,7 @@ Khi người dùng yêu cầu tối ưu hoặc kiểm tra máy:
 1. **Tối ưu tốc độ bàn phím trong Registry**:
    - `Set-ItemProperty -Path "HKCU:\Control Panel\Keyboard" -Name "KeyboardSpeed" -Value 31`
    - `Set-ItemProperty -Path "HKCU:\Control Panel\Keyboard" -Name "KeyboardDelay" -Value 0`
-2. **Cài đặt công cụ qua winget**:
+2. **Cài đặt công cụ qua winget (100% Free & Open Source)**:
    - `winget install ajeetdsouza.zoxide --source winget --accept-source-agreements --accept-package-agreements`
    - `winget install eza-community.eza --source winget --accept-source-agreements --accept-package-agreements`
    - `winget install sharkdp.bat --source winget --accept-source-agreements --accept-package-agreements`

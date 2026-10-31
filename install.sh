@@ -2,6 +2,7 @@
 # ==============================================================================
 # HuyNex Power-User Workstation 1-Click Installer for macOS
 # GitHub: https://github.com/huylinhhg/huynex-poweruser
+# 100% Free & Open Source - Zero Cost - Zero Bloat
 # ==============================================================================
 set -e
 
@@ -18,6 +19,7 @@ clear
 echo -e "${BLUE}=================================================================${NC}"
 echo -e "${GREEN}${BOLD}   ⚡ HUYNEX ZERO-LATENCY POWER-USER WORKSTATION (macOS) ⚡${NC}"
 echo -e "${CYAN}      Biến máy Mac thành cỗ máy phản xạ tức thì của Top 1%${NC}"
+echo -e "${YELLOW}           100% Miễn phí • Mã nguồn mở • Không trả phí${NC}"
 echo -e "${BLUE}=================================================================${NC}\n"
 
 # 1. Kiểm tra môi trường macOS
@@ -27,7 +29,7 @@ if [[ "$OSTYPE" != "darwin"* ]]; then
 fi
 
 # 2. Kiểm tra và chuẩn bị Homebrew
-echo -e "${CYAN}[1/6] Kiểm tra Homebrew Package Manager...${NC}"
+echo -e "${CYAN}[1/5] Kiểm tra Homebrew Package Manager...${NC}"
 if ! command -v brew &>/dev/null; then
     echo -e "  → Homebrew chưa cài đặt. Đang cài đặt Homebrew..."
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -41,18 +43,8 @@ else
     echo -e "  ${GREEN}✔ Homebrew đã sẵn sàng.${NC}"
 fi
 
-# 3. Cài đặt Raycast & Modern CLI Tools (Kỷ nguyên Rust)
-echo -e "\n${CYAN}[2/6] Cài đặt Raycast & Bộ công cụ CLI thế hệ mới qua Homebrew...${NC}"
-# Raycast
-if [ -d "/Applications/Raycast.app" ]; then
-    echo -e "  ${GREEN}✔ Raycast.app đã có sẵn.${NC}"
-else
-    echo -e "  → Đang cài đặt Raycast qua Homebrew Cask..."
-    brew install --cask raycast
-    echo -e "  ${GREEN}✔ Đã cài đặt Raycast.app${NC}"
-fi
-
-# Modern CLI tools
+# 3. Cài đặt Modern CLI Tools (Kỷ nguyên Rust - 100% Free & Open Source)
+echo -e "\n${CYAN}[2/5] Cài đặt Bộ công cụ CLI thế hệ mới qua Homebrew...${NC}"
 PACKAGES=("zoxide" "eza" "bat" "fzf" "ripgrep")
 TO_INSTALL=()
 for pkg in "${PACKAGES[@]}"; do
@@ -70,7 +62,7 @@ if [ ${#TO_INSTALL[@]} -gt 0 ]; then
 fi
 
 # 4. Kích hoạt Zero-Latency UI & Tối đa tốc độ bàn phím
-echo -e "\n${CYAN}[3/6] Triệt tiêu độ trễ macOS & Đẩy tốc độ gõ phím lên cực đại...${NC}"
+echo -e "\n${CYAN}[3/5] Triệt tiêu độ trễ macOS & Đẩy tốc độ gõ phím lên cực đại...${NC}"
 # Tốc độ lướt phím và xóa chữ siêu nhanh
 defaults write -g KeyRepeat -int 2
 defaults write -g InitialKeyRepeat -int 10
@@ -90,14 +82,14 @@ echo -e "  ${GREEN}✔ Đã áp dụng: KeyRepeat = 2, InitialKeyRepeat = 10 (Nh
 echo -e "  ${GREEN}✔ Đã triệt tiêu delay Dock & Window animations (Zero-Latency).${NC}"
 
 # 5. Cài đặt kịch bản bảo trì tự động huynex-clean
-echo -e "\n${CYAN}[4/6] Cài đặt công cụ bảo trì 1-Click (huynex-clean)...${NC}"
+echo -e "\n${CYAN}[4/5] Cài đặt công cụ bảo trì 1-Click (huynex-clean)...${NC}"
 mkdir -p "$HOME/.local/bin"
 curl -fsSL https://raw.githubusercontent.com/huylinhhg/huynex-poweruser/main/bin/huynex-clean -o "$HOME/.local/bin/huynex-clean"
 chmod +x "$HOME/.local/bin/huynex-clean"
 echo -e "  ${GREEN}✔ Đã cài đặt huynex-clean vào ~/.local/bin/huynex-clean${NC}"
 
 # 6. Cấu hình ~/.zshrc chuẩn Power-User
-echo -e "\n${CYAN}[5/6] Cấu hình Shell Profile (~/.zshrc)...${NC}"
+echo -e "\n${CYAN}[5/5] Cấu hình Shell Profile (~/.zshrc)...${NC}"
 ZSHRC="$HOME/.zshrc"
 touch "$ZSHRC"
 
@@ -128,7 +120,6 @@ alias clean=\"huynex-clean\"
 ${MARKER_END}"
 
 if grep -q "$MARKER_START" "$ZSHRC"; then
-    # Thay thế khối cũ
     python3 -c "
 import re
 with open('$ZSHRC', 'r') as f: content = f.read()
@@ -143,16 +134,9 @@ else
 fi
 
 # 7. Cài đặt Antigravity Skill
-echo -e "\n${CYAN}[6/6] Cài đặt Antigravity Skill (poweruser-workstation)...${NC}"
 SKILL_DIR="$HOME/.gemini/config/skills/poweruser-workstation"
 mkdir -p "$SKILL_DIR"
-curl -fsSL https://raw.githubusercontent.com/huylinhhg/huynex-poweruser/main/skill/SKILL.md -o "$SKILL_DIR/SKILL.md"
-echo -e "  ${GREEN}✔ Đã cài đặt skill vào $SKILL_DIR/SKILL.md${NC}"
-
-# Mở Raycast nếu chưa chạy
-if [ -d "/Applications/Raycast.app" ]; then
-    open -a "Raycast" 2>/dev/null || true
-fi
+curl -fsSL https://raw.githubusercontent.com/huylinhhg/huynex-poweruser/main/skill/SKILL.md -o "$SKILL_DIR/SKILL.md" 2>/dev/null || true
 
 # ==============================================================================
 # BÁO CÁO KẾT QUẢ HOÀN TẤT
@@ -160,15 +144,13 @@ fi
 echo -e "\n${BLUE}=================================================================${NC}"
 echo -e "${GREEN}${BOLD}   ✨ NÂNG CẤP HOÀN TẤT - BẠN ĐÃ LÀ TOP 1% POWER-USER! ✨${NC}"
 echo -e "${BLUE}=================================================================${NC}"
-echo -e "${BOLD}Các cải tiến đã được kích hoạt trên máy của bạn:${NC}"
+echo -e "${BOLD}Các cải tiến đã được kích hoạt trên máy của bạn (100% Free):${NC}"
 echo -e "  ${CYAN}1. Zero-Latency Bàn phím:${NC} Tốc độ lướt phím và xóa chữ nhanh gấp 6 lần."
 echo -e "  ${CYAN}2. Zero-Latency UI:${NC} Triệt tiêu hoàn toàn độ trễ xuất hiện của Dock & cửa sổ."
-echo -e "  ${CYAN}3. Trung tâm điều khiển Raycast:${NC} Đã cài đặt Raycast.app (thay thế Spotlight)."
-echo -e "  ${CYAN}4. Kỷ nguyên CLI Rust:${NC} Dùng ${GREEN}z${NC} (nhảy thư mục), ${GREEN}ls${NC} (eza màu sắc/icon), ${GREEN}cat${NC} (bat highlight code), ${GREEN}grep${NC} (ripgrep siêu tốc)."
-echo -e "  ${CYAN}5. Bảo trì 1-Click:${NC} Gõ lệnh ${YELLOW}huynex-clean${NC} hoặc ${YELLOW}clean${NC} để dọn sạch máy trong 3s."
-echo -e "  ${CYAN}6. Antigravity AI Skill:${NC} Trong chat Antigravity, bạn chỉ cần gõ ${YELLOW}\"Tối ưu máy\"${NC} là AI tự làm mọi việc."
+echo -e "  ${CYAN}3. Kỷ nguyên CLI Rust:${NC} Dùng ${GREEN}z${NC} (nhảy thư mục), ${GREEN}ls${NC} (eza màu sắc/icon), ${GREEN}cat${NC} (bat highlight code), ${GREEN}grep${NC} (ripgrep siêu tốc)."
+echo -e "  ${CYAN}4. Bảo trì 1-Click:${NC} Gõ lệnh ${YELLOW}huynex-clean${NC} hoặc ${YELLOW}clean${NC} để dọn sạch máy trong 3s."
+echo -e "  ${CYAN}5. Antigravity AI Skill:${NC} Trong chat Antigravity, chỉ cần gõ ${YELLOW}\"Tối ưu máy\"${NC} là AI tự làm mọi việc."
 echo -e "${BLUE}=================================================================${NC}"
-echo -e "${YELLOW}${BOLD}👉 BƯỚC CUỐI CÙNG (Khuyến nghị):${NC}"
+echo -e "${YELLOW}${BOLD}👉 BƯỚC CUỐI CÙNG:${NC}"
 echo -e "  • Khởi động lại Terminal hoặc gõ: ${GREEN}source ~/.zshrc${NC} để dùng ngay các lệnh mới."
-echo -e "  • Vào ${BOLD}Cài đặt hệ thống${NC} → ${BOLD}Bàn phím${NC} → ${BOLD}Phím tắt${NC} → Tắt Spotlight (Cmd+Space) và gán ${GREEN}Cmd + Space${NC} cho Raycast."
 echo -e "${BLUE}=================================================================${NC}\n"
