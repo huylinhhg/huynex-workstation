@@ -2,7 +2,7 @@
 # ==============================================================================
 # HuyNex Power-User Workstation 1-Click Installer for macOS
 # GitHub: https://github.com/huylinhhg/huynex-workstation
-# 100% Free - Khong loi font - Tu dong nhan dien RAM & Tien trinh
+# 100% Free - Khong loi font - Kien truc 2 Tang toi uu chuyen sau
 # ==============================================================================
 set -e
 
@@ -45,9 +45,9 @@ ps -axo %mem,rss,comm 2>/dev/null | sort -nr | head -n 5 | while read -r p_mem p
 done
 
 # ------------------------------------------------------------------------------
-# [BUOC 2/6] QUET VA TAT SACH CAC TAC VU CHAY NGAM (ZERO-BLOAT)
+# [BUOC 2/6] TANG 1: TU DONG VO HIEU HOA TAC VU NGAM 24/7 (100% AN TOAN)
 # ------------------------------------------------------------------------------
-echo -e "\n${CYAN}[2/6] Quet va tat sach cac tac vu/tien trinh chay ngam...${NC}"
+echo -e "\n${CYAN}[2/6] [TANG 1] Quet va tat sach cac tac vu/tien trinh chay ngam...${NC}"
 
 BLOAT_PROCESSES=(
     "AdobeIPCBroker"
@@ -95,12 +95,10 @@ for pattern in "${USER_AGENTS[@]}"; do
     done
 done
 
-# Vo hieu hoa crash dialogs & telemetry cua Apple
 defaults write com.apple.CrashReporter DialogType none 2>/dev/null || true
 defaults write -g ApplePersistenceIgnoreState YES 2>/dev/null || true
 echo -e "  ${GREEN}✔ Da tat hop thoai CrashReporter va khoi phuc app loi gay cham.${NC}"
 
-# Don daemon cap he thong neu co quyen ghi
 for plist in /Library/LaunchAgents/com.microsoft.update*.plist /Library/LaunchDaemons/com.macpaw.CleanMyMac*.plist /Library/LaunchDaemons/com.microsoft.autoupdate*.plist; do
     if [ -f "$plist" ] && [ -w "$plist" ]; then
         launchctl unload "$plist" 2>/dev/null || true
@@ -116,9 +114,54 @@ else
 fi
 
 # ------------------------------------------------------------------------------
-# [BUOC 3/6] KIEM TRA VA CAI DAT HOMEBREW (HO TRO CA MAY TRANG)
+# [BUOC 3/6] TANG 2: TUY CHON NANG CAO (TINH NANG AN MACOS)
 # ------------------------------------------------------------------------------
-echo -e "\n${CYAN}[3/6] Kiem tra Homebrew Package Manager...${NC}"
+echo -e "\n${BLUE}=================================================================${NC}"
+echo -e "${GREEN}${BOLD}   [TANG 2] TUY CHON TOI UU CAC TINH NANG AN MACOS${NC}"
+echo -e "${BLUE}=================================================================${NC}"
+echo -e "Cac tinh nang an nay co the giai phong them RAM va hang chuc GB SSD:"
+echo -e "  1. Xoa ban sao luu an Time Machine Local Snapshots (Giai phong 10-30 GB SSD)"
+echo -e "  2. Tat Chrome chay ngam sau khi dong cua so (Tiet kiem ~500 MB RAM)"
+echo -e "  3. Kiem tra danh sach ung dung khoi dong cung may (Login Items)"
+
+echo ""
+read -r -p "Ban co muon ap dung cac toi uu an nay khong? (Y/n) [Mac dinh: Y]: " mac_opt
+mac_opt=${mac_opt:-y}
+
+if [[ "$mac_opt" =~ ^[Yy]$ ]]; then
+    echo -e "\n${CYAN}-> Dang thuc hien toi uu an...${NC}"
+
+    # A. Xoa Time Machine Local Snapshots
+    SNAPSHOTS=$(tmutil listlocalsnapshots / 2>/dev/null | grep "com.apple.TimeMachine" || true)
+    if [ -n "$SNAPSHOTS" ]; then
+        for snap in $SNAPSHOTS; do
+            DATE=$(echo "$snap" | cut -d'.' -f4)
+            tmutil deletelocalsnapshots "$DATE" 2>/dev/null || true
+        done
+        echo -e "  ${GREEN}✔ Da xoa cac ban sao luu an Time Machine tren o SSD.${NC}"
+    else
+        echo -e "  ${GREEN}✔ O SSD sach se, khong co Time Machine Snapshot an nao.${NC}"
+    fi
+
+    # B. Tat Google Chrome chay ngam
+    defaults write com.google.Chrome BackgroundModeEnabled -bool false 2>/dev/null || true
+    echo -e "  ${GREEN}✔ Da tat che do Google Chrome chay ngam khi tat cua so.${NC}"
+
+    # C. Hien thi danh sach Login Items
+    LOGIN_ITEMS=$(osascript -e 'tell application "System Events" to get name of every login item' 2>/dev/null || true)
+    if [ -n "$LOGIN_ITEMS" ]; then
+        echo -e "  -> Cac ung dung dang tu dong mo khi khoi dong may:"
+        echo -e "     ${YELLOW}${LOGIN_ITEMS}${NC}"
+        echo -e "     (Neu khong can, ban vao System Settings -> General -> Login Items de tat bot)."
+    fi
+else
+    echo -e "-> Da giu nguyen theo y muon cua ban."
+fi
+
+# ------------------------------------------------------------------------------
+# [BUOC 4/6] KIEM TRA VA CAI DAT HOMEBREW (HO TRO CA MAY TRANG)
+# ------------------------------------------------------------------------------
+echo -e "\n${CYAN}[4/6] Kiem tra Homebrew Package Manager...${NC}"
 if ! command -v brew &>/dev/null; then
     echo -e "  -> May moi (chua co Homebrew). Dang cai dat Homebrew chinh thuc..."
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -133,9 +176,9 @@ else
 fi
 
 # ------------------------------------------------------------------------------
-# [BUOC 4/6] CAI DAT BO CONG CU CLI RUST THE HE MOI (100% FREE)
+# [BUOC 5/6] CAI DAT BO CONG CU CLI RUST THE HE MOI (100% FREE)
 # ------------------------------------------------------------------------------
-echo -e "\n${CYAN}[4/6] Cai dat bo cong cu CLI the he moi qua Homebrew...${NC}"
+echo -e "\n${CYAN}[5/6] Cai dat bo cong cu CLI the he moi qua Homebrew...${NC}"
 PACKAGES=("zoxide" "eza" "bat" "fzf" "ripgrep")
 TO_INSTALL=()
 for pkg in "${PACKAGES[@]}"; do
@@ -153,9 +196,9 @@ if [ ${#TO_INSTALL[@]} -gt 0 ]; then
 fi
 
 # ------------------------------------------------------------------------------
-# [BUOC 5/6] TOI UU ZERO-LATENCY BAN PHIM VA HOAT ANH MAN HINH
+# [BUOC 6/6] TOI UU ZERO-LATENCY BAN PHIM, PROFILE VA SKILL AI
 # ------------------------------------------------------------------------------
-echo -e "\n${CYAN}[5/6] Triet tieu do tre macOS & Tang toc do phan hoi ban phim...${NC}"
+echo -e "\n${CYAN}[6/6] Triet tieu do tre ban phim & Hoan tat cau hinh...${NC}"
 defaults write -g KeyRepeat -int 2
 defaults write -g InitialKeyRepeat -int 10
 
@@ -170,12 +213,10 @@ killall Finder 2>/dev/null || true
 echo -e "  ${GREEN}✔ Da ap dung: KeyRepeat = 2, InitialKeyRepeat = 10 (Nhanh gap 6 lan).${NC}"
 echo -e "  ${GREEN}✔ Da triet tieu delay Dock & Window animations (Zero-Latency).${NC}"
 
-# Cai dat huynex-clean vao ~/.local/bin
 mkdir -p "$HOME/.local/bin"
 curl -fsSL https://raw.githubusercontent.com/huylinhhg/huynex-workstation/main/bin/huynex-clean -o "$HOME/.local/bin/huynex-clean"
 chmod +x "$HOME/.local/bin/huynex-clean"
 
-# Cau hinh ~/.zshrc
 ZSHRC="$HOME/.zshrc"
 touch "$ZSHRC"
 
@@ -183,10 +224,8 @@ MARKER_START="# === HUYNEX_POWER_USER_START ==="
 MARKER_END="# === HUYNEX_POWER_USER_END ==="
 
 CONFIG_BLOCK="${MARKER_START}
-# Thu muc bin ca nhan
 export PATH=\"\$HOME/.local/bin:\$PATH\"
 
-# Tich hop Modern CLI Toolchain (zoxide, fzf)
 if command -v zoxide &>/dev/null; then
   eval \"\$(zoxide init zsh)\"
 fi
@@ -194,7 +233,6 @@ if command -v fzf &>/dev/null; then
   source <(fzf --zsh)
 fi
 
-# Power-User Aliases (Ky nguyen Rust)
 alias cd=\"z\"
 alias ls=\"eza --icons --group-directories-first\"
 alias ll=\"eza -lah --icons --group-directories-first --git\"
@@ -219,17 +257,13 @@ else
     echo -e "  ${GREEN}✔ Da them cau hinh HuyNex vao ~/.zshrc${NC}"
 fi
 
-# ------------------------------------------------------------------------------
-# [BUOC 6/6] CAI DAT ANTIGRAVITY AI SKILL
-# ------------------------------------------------------------------------------
-echo -e "\n${CYAN}[6/6] Cai dat ky nang AI Antigravity (poweruser-workstation)...${NC}"
 SKILL_DIR="$HOME/.gemini/config/skills/poweruser-workstation"
 mkdir -p "$SKILL_DIR"
 curl -fsSL https://raw.githubusercontent.com/huylinhhg/huynex-workstation/main/skill/SKILL.md -o "$SKILL_DIR/SKILL.md" 2>/dev/null || true
 echo -e "  ${GREEN}✔ Da nap ky nang AI vao ~/.gemini/config/skills/poweruser-workstation${NC}"
 
 # ==============================================================================
-# BAO CAO KET QUA HOAN TAT (TIENG VIET KHONG DAU - KHONG LOI FONT)
+# BAO CAO KET QUA HOAN TAT
 # ==============================================================================
 echo -e "\n${BLUE}=================================================================${NC}"
 echo -e "${GREEN}${BOLD}   NANG CAP HOAN TAT - BAN DA LA TOP 1% POWER-USER!${NC}"

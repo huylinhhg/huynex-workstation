@@ -2,7 +2,7 @@
 .SYNOPSIS
     HuyNex Zero-Latency Workstation Setup for Windows
     GitHub: https://github.com/huylinhhg/huynex-workstation
-    100% Free - Khong loi font - Tu dong nhan dien RAM & Ung dung
+    100% Free - Khong loi font - Kien truc 2 Tang toi uu chuyen sau
 #>
 
 [Console]::OutputEncoding = [System.Text.Encoding]::ASCII
@@ -41,18 +41,17 @@ try {
 }
 
 # ------------------------------------------------------------------------------
-# [BUOC 2/6] QUET VA TAT SACH CAC DICH VU / TAC VU NGAM (ZERO-BLOAT)
+# [BUOC 2/6] TANG 1: TU DONG VO HIEU HOA CAC DICH VU / TAC VU NGAM (100% AN TOAN)
 # ------------------------------------------------------------------------------
-Write-Host "`n[2/6] Quet va vo hieu hoa cac dich vu chay ngam gay hao RAM..." -ForegroundColor Yellow
+Write-Host "`n[2/6] [TANG 1] Quet va vo hieu hoa cac dich vu chay ngam 24/7..." -ForegroundColor Yellow
 
-# Danh sach cac Services chay ngam thuong gap gay ton tai nguyen
 $servicesToDisable = @(
     @{ Name = "gupdate"; Desc = "Google Update (Tu dong)" },
     @{ Name = "gupdatem"; Desc = "Google Update (Thu cong)" },
     @{ Name = "edgeupdate"; Desc = "Microsoft Edge Update (Tu dong)" },
     @{ Name = "edgeupdatem"; Desc = "Microsoft Edge Update (Thu cong)" },
     @{ Name = "AdobeARMservice"; Desc = "Adobe Acrobat Update" },
-    @{ Name = "DiagTrack"; Desc = "Connected User Experiences and Telemetry (Theo doi Windows)" },
+    @{ Name = "DiagTrack"; Desc = "Connected User Experiences and Telemetry (Windows tracking)" },
     @{ Name = "dmwappushservice"; Desc = "WAP Push Routing Service" },
     @{ Name = "MapsBroker"; Desc = "Downloaded Maps Manager" }
 )
@@ -63,12 +62,11 @@ foreach ($svc in $servicesToDisable) {
     if ($found) {
         Stop-Service -Name $svc.Name -Force -ErrorAction SilentlyContinue
         Set-Service -Name $svc.Name -StartupType Disabled -ErrorAction SilentlyContinue
-        Write-Host "  ✔ Da tat va vo hieu hoa dich vu ngam: $($svc.Desc) ($($svc.Name))" -ForegroundColor Green
+        Write-Host "  ✔ Da tat va vo hieu hoa: $($svc.Desc) ($($svc.Name))" -ForegroundColor Green
         $svcDisabled++
     }
 }
 
-# Vo hieu hoa cac Scheduled Tasks chay ngam cua trinh cap nhat
 if (Get-Command Disable-ScheduledTask -ErrorAction SilentlyContinue) {
     Get-ScheduledTask -ErrorAction SilentlyContinue | Where-Object { $_.TaskName -match "GoogleUpdate|MicrosoftEdgeUpdate|Adobe.*Update" } | ForEach-Object {
         Disable-ScheduledTask -TaskName $_.TaskName -ErrorAction SilentlyContinue | Out-Null
@@ -77,14 +75,13 @@ if (Get-Command Disable-ScheduledTask -ErrorAction SilentlyContinue) {
     }
 }
 
-# Dong cac tien trinh cap nhat dang chay chiem RAM
 $bloatProcesses = @("GoogleUpdate", "MicrosoftEdgeUpdate", "AdobeARM", "Creative Cloud", "AdobeDesktopService", "CCXProcess")
 $procKilled = 0
 foreach ($proc in $bloatProcesses) {
     $running = Get-Process -Name $proc -ErrorAction SilentlyContinue
     if ($running) {
         Stop-Process -Name $proc -Force -ErrorAction SilentlyContinue
-        Write-Host "  ✔ Da dong tien trinh chay ngam: $proc" -ForegroundColor Green
+        Write-Host "  ✔ Da dong tien trinh ngam: $proc" -ForegroundColor Green
         $procKilled++
     }
 }
@@ -93,7 +90,6 @@ if ($svcDisabled -eq 0 -and $procKilled -eq 0) {
     Write-Host "  ✔ He thong sach se (may moi hoac da toi uu), khong co tien trinh ngam ton dong." -ForegroundColor Green
 }
 
-# Tat Telemetry va Bing Search ngam trong Registry
 try {
     $dataCollectionPath = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DataCollection"
     if (!(Test-Path $dataCollectionPath)) { New-Item -Path $dataCollectionPath -Force -ErrorAction SilentlyContinue | Out-Null }
@@ -113,9 +109,64 @@ try {
 }
 
 # ------------------------------------------------------------------------------
-# [BUOC 3/6] TOI UU TOC DO PHAN HOI BAN PHIM (ZERO-LATENCY)
+# [BUOC 3/6] TANG 2: TUY CHON NANG CAO (TAT CAC TINH NANG AN NGON 1-2 GB RAM)
 # ------------------------------------------------------------------------------
-Write-Host "`n[3/6] Toi uu toc do phan hoi ban phim len muc toi da..." -ForegroundColor Yellow
+Write-Host "`n=================================================================" -ForegroundColor Cyan
+Write-Host "   [TANG 2] TUY CHON TOI UU CAC TINH NANG AN HE THONG" -ForegroundColor Green
+Write-Host "=================================================================" -ForegroundColor Cyan
+Write-Host "Cac tinh nang an nay mac dinh cua Windows an ngam 1-2 GB RAM:" -ForegroundColor Yellow
+Write-Host "  1. Widgets / Bang tin thoi tiet Win 11 (ngon 300-500 MB RAM Edge WebView)" -ForegroundColor White
+Write-Host "  2. Xbox Game Bar & Ghi hinh ngam DVR (ngon 200-300 MB RAM)" -ForegroundColor White
+Write-Host "  3. Windows Delivery Optimization P2P (ngon bang thong va RAM)" -ForegroundColor White
+Write-Host "  4. App nang tu khoi dong cung Windows (Discord, Spotify, Steam, Teams)" -ForegroundColor White
+
+Write-Host ""
+$optChoice = Read-Host "Ban co muon tat cac tinh nang an nay de tiet kiem them RAM khong? (Y/n) [Mac dinh: Y]"
+if ([string]::IsNullOrWhiteSpace($optChoice)) { $optChoice = "y" }
+
+if ($optChoice -match "^[Yy]$") {
+    Write-Host "`n-> Dang tat cac tinh nang an he thong..." -ForegroundColor Cyan
+
+    try {
+        $advPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced"
+        Set-ItemProperty -Path $advPath -Name "TaskbarDa" -Value 0 -Force -ErrorAction SilentlyContinue | Out-Null
+        Stop-Process -Name "Widgets" -Force -ErrorAction SilentlyContinue
+        Write-Host "  ✔ Da tat Widgets & Bang tin thoi tiet Win 11 (Tiet kiem ~400 MB RAM)" -ForegroundColor Green
+    } catch {}
+
+    try {
+        Set-ItemProperty -Path "HKCU:\System\GameConfigStore" -Name "GameDVR_Enabled" -Value 0 -Force -ErrorAction SilentlyContinue | Out-Null
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\GameDVR" -Name "AllowGameDVR" -Value 0 -Force -ErrorAction SilentlyContinue | Out-Null
+        Stop-Process -Name "GameBar" -Force -ErrorAction SilentlyContinue
+        Stop-Process -Name "bcastdvr" -Force -ErrorAction SilentlyContinue
+        Write-Host "  ✔ Da tat Xbox Game Bar & Ghi hinh ngam (Tiet kiem ~250 MB RAM)" -ForegroundColor Green
+    } catch {}
+
+    if (Get-Service -Name "DoSvc" -ErrorAction SilentlyContinue) {
+        Stop-Service -Name "DoSvc" -Force -ErrorAction SilentlyContinue
+        Set-Service -Name "DoSvc" -StartupType Disabled -ErrorAction SilentlyContinue
+        Write-Host "  ✔ Da vo hieu hoa Windows Delivery Optimization P2P" -ForegroundColor Green
+    }
+
+    $runPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run"
+    if (Test-Path $runPath) {
+        $runProps = Get-ItemProperty -Path $runPath -ErrorAction SilentlyContinue
+        $heavyApps = @("Discord", "Spotify", "Steam", "Teams", "OneDrive")
+        foreach ($app in $heavyApps) {
+            if ($runProps.$app) {
+                Remove-ItemProperty -Path $runPath -Name $app -ErrorAction SilentlyContinue | Out-Null
+                Write-Host "  ✔ Da bo khoi dong cung Windows cho: $app (Giai phong RAM khi mo may)" -ForegroundColor Green
+            }
+        }
+    }
+} else {
+    Write-Host "-> Da giu nguyen cac tinh nang an theo y muon cua ban." -ForegroundColor Yellow
+}
+
+# ------------------------------------------------------------------------------
+# [BUOC 4/6] TOI UU TOC DO PHAN HOI BAN PHIM (ZERO-LATENCY)
+# ------------------------------------------------------------------------------
+Write-Host "`n[4/6] Toi uu toc do phan hoi ban phim len muc toi da..." -ForegroundColor Yellow
 try {
     Set-ItemProperty -Path "HKCU:\Control Panel\Keyboard" -Name "KeyboardSpeed" -Value 31 -Force
     Set-ItemProperty -Path "HKCU:\Control Panel\Keyboard" -Name "KeyboardDelay" -Value 0 -Force
@@ -125,9 +176,9 @@ try {
 }
 
 # ------------------------------------------------------------------------------
-# [BUOC 4/6] KIEM TRA & CAI DAT BO CONG CU CLI RUST QUA WINGET
+# [BUOC 5/6] KIEM TRA & CAI DAT BO CONG CU CLI RUST QUA WINGET
 # ------------------------------------------------------------------------------
-Write-Host "`n[4/6] Kiem tra va cai dat bo cong cu CLI the he moi qua winget..." -ForegroundColor Yellow
+Write-Host "`n[5/6] Kiem tra va cai dat bo cong cu CLI the he moi qua winget..." -ForegroundColor Yellow
 if (Get-Command winget -ErrorAction SilentlyContinue) {
     $packages = @(
         @{ Name = "zoxide"; Id = "ajeetdsouza.zoxide"; CheckCmd = "zoxide" },
@@ -152,9 +203,9 @@ if (Get-Command winget -ErrorAction SilentlyContinue) {
 }
 
 # ------------------------------------------------------------------------------
-# [BUOC 5/6] CAI DAT CONG CU BAO TRI VA PROFILE POWERSHELL
+# [BUOC 6/6] CAI DAT CONG CU BAO TRI, PROFILE POWERSHELL & SKILL AI
 # ------------------------------------------------------------------------------
-Write-Host "`n[5/6] Cai dat cong cu bao tri 1-Click (huynex-clean.ps1)..." -ForegroundColor Yellow
+Write-Host "`n[6/6] Cai dat cong cu bao tri 1-Click va profile..." -ForegroundColor Yellow
 $binDir = "$HOME\.local\bin"
 if (!(Test-Path $binDir)) { New-Item -ItemType Directory -Path $binDir -Force | Out-Null }
 $cleanScriptUrl = "https://raw.githubusercontent.com/huylinhhg/huynex-workstation/main/bin/huynex-clean.ps1"
@@ -170,7 +221,6 @@ $markerEnd = "# === HUYNEX_POWER_USER_END ==="
 
 $profileBlock = @"
 $markerStart
-# Modern CLI Toolchain (zoxide, fzf)
 if (Get-Command zoxide -ErrorAction SilentlyContinue) {
     Invoke-Expression (& { (zoxide init powershell | Out-String) })
 }
@@ -202,10 +252,6 @@ if ($currentProfile -match $startEsc) {
     Write-Host "  ✔ Da them cau hinh HuyNex vao PowerShell Profile" -ForegroundColor Green
 }
 
-# ------------------------------------------------------------------------------
-# [BUOC 6/6] CAI DAT ANTIGRAVITY AI SKILL
-# ------------------------------------------------------------------------------
-Write-Host "`n[6/6] Cai dat Antigravity Skill (poweruser-workstation)..." -ForegroundColor Yellow
 $skillDir = "$HOME\.gemini\config\skills\poweruser-workstation"
 if (!(Test-Path $skillDir)) { New-Item -ItemType Directory -Path $skillDir -Force | Out-Null }
 $skillUrl = "https://raw.githubusercontent.com/huylinhhg/huynex-workstation/main/skill/SKILL.md"
@@ -213,7 +259,7 @@ Invoke-WebRequest -Uri $skillUrl -OutFile "$skillDir\SKILL.md" -ErrorAction Sile
 Write-Host "  ✔ Da cai dat skill vao $skillDir\SKILL.md" -ForegroundColor Green
 
 # ==============================================================================
-# BAO CAO KET QUA HOAN TAT (TIENG VIET KHONG DAU - KHONG LOI FONT)
+# BAO CAO KET QUA HOAN TAT
 # ==============================================================================
 Write-Host "`n=================================================================" -ForegroundColor Cyan
 Write-Host "   NANG CAP HOAN TAT - BAN DA LA TOP 1% POWER-USER!" -ForegroundColor Green
