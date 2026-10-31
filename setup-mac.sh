@@ -19,7 +19,7 @@ clear
 echo -e "${BLUE}=================================================================${NC}"
 echo -e "${GREEN}${BOLD}   ⚡ HUYNEX ZERO-LATENCY POWER-USER WORKSTATION (macOS) ⚡${NC}"
 echo -e "${CYAN}      Biến máy Mac thành cỗ máy phản xạ tức thì của Top 1%${NC}"
-echo -e "${YELLOW}           100% Miễn phí • Mã nguồn mở • Không trả phí${NC}"
+echo -e "${YELLOW}       100% Miễn phí • Tắt sạch tác vụ ngầm • Zero-Bloat${NC}"
 echo -e "${BLUE}=================================================================${NC}\n"
 
 # 1. Kiểm tra môi trường macOS
@@ -28,8 +28,83 @@ if [[ "$OSTYPE" != "darwin"* ]]; then
     exit 1
 fi
 
-# 2. Kiểm tra và chuẩn bị Homebrew
-echo -e "${CYAN}[1/5] Kiểm tra Homebrew Package Manager...${NC}"
+# ------------------------------------------------------------------------------
+# [BƯỚC 1/6] TRIỆT TIÊU TOÀN BỘ TIẾN TRÌNH & DAEMON CHẠY NGẦM ĂN RAM/CPU
+# ------------------------------------------------------------------------------
+echo -e "${CYAN}[1/6] Quét & Tắt sạch các tác vụ/tiến trình chạy ngầm (Zero-Bloat)...${NC}"
+
+# A. Diệt ngay các tiến trình chạy ngầm ăn RAM (Adobe, CleanMyMac, Updaters)
+BLOAT_PROCESSES=(
+    "AdobeIPCBroker"
+    "CCLibrary"
+    "CoreSync"
+    "Adobe Desktop Service"
+    "AdobeCRDaemon"
+    "CleanMyMac4.HealthMonitor"
+    "CleanMyMac4.Menu"
+    "CleanMyMac X Updater"
+    "GoogleSoftwareUpdateAgent"
+    "GoogleUpdater"
+    "coccoc_update"
+    "Microsoft AU Daemon"
+    "Microsoft Update Assistant"
+)
+
+KILLED_COUNT=0
+for proc in "${BLOAT_PROCESSES[@]}"; do
+    if pgrep -fi "$proc" &>/dev/null; then
+        pkill -9 -fi "$proc" 2>/dev/null || true
+        echo -e "  ${GREEN}✔ Đã tiêu diệt tiến trình ngầm:${NC} $proc"
+        ((KILLED_COUNT++)) || true
+    fi
+done
+
+# B. Gỡ bỏ các file tự khởi động ngầm 24/7 trong ~/Library/LaunchAgents
+USER_AGENTS=(
+    "com.macpaw.CleanMyMac*"
+    "com.google.keystone*"
+    "com.google.GoogleUpdater*"
+    "com.coccoc*"
+    "com.adobe.*"
+    "com.microsoft.update*"
+)
+
+DISABLED_AGENTS=0
+for pattern in "${USER_AGENTS[@]}"; do
+    for plist in "$HOME/Library/LaunchAgents"/$pattern.plist; do
+        if [ -f "$plist" ]; then
+            launchctl unload -w "$plist" 2>/dev/null || true
+            rm -f "$plist"
+            echo -e "  ${GREEN}✔ Đã vô hiệu hóa daemon ngầm:${NC} $(basename "$plist")"
+            ((DISABLED_AGENTS++)) || true
+        fi
+    done
+done
+
+# C. Vô hiệu hóa crash report dialog và app state restoring gây chậm máy
+defaults write com.apple.CrashReporter DialogType none
+defaults write -g ApplePersistenceIgnoreState YES
+echo -e "  ${GREEN}✔ Đã tắt CrashReporter dialog & khôi phục trạng thái app nặng nề.${NC}"
+
+# D. Quét dọn cấp hệ thống (nếu có quyền ghi)
+for plist in /Library/LaunchAgents/com.microsoft.update*.plist /Library/LaunchDaemons/com.macpaw.CleanMyMac*.plist /Library/LaunchDaemons/com.microsoft.autoupdate*.plist; do
+    if [ -f "$plist" ] && [ -w "$plist" ]; then
+        launchctl unload "$plist" 2>/dev/null || true
+        rm -f "$plist" 2>/dev/null || true
+        echo -e "  ${GREEN}✔ Đã dọn daemon hệ thống:${NC} $(basename "$plist")"
+    fi
+done
+
+if [ $KILLED_COUNT -eq 0 ] && [ $DISABLED_AGENTS -eq 0 ]; then
+    echo -e "  ${GREEN}✔ Máy sạch sẽ, không có tác vụ chạy ngầm nào tồn đọng.${NC}"
+else
+    echo -e "  ${GREEN}✔ Đã giải phóng RAM & CPU: Đã tắt $KILLED_COUNT tiến trình, vô hiệu hóa $DISABLED_AGENTS dịch vụ ngầm.${NC}"
+fi
+
+# ------------------------------------------------------------------------------
+# [BƯỚC 2/6] KIỂM TRA HOMEBREW
+# ------------------------------------------------------------------------------
+echo -e "\n${CYAN}[2/6] Kiểm tra Homebrew Package Manager...${NC}"
 if ! command -v brew &>/dev/null; then
     echo -e "  → Homebrew chưa cài đặt. Đang cài đặt Homebrew..."
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -43,8 +118,10 @@ else
     echo -e "  ${GREEN}✔ Homebrew đã sẵn sàng.${NC}"
 fi
 
-# 3. Cài đặt Modern CLI Tools (Kỷ nguyên Rust - 100% Free & Open Source)
-echo -e "\n${CYAN}[2/5] Cài đặt Bộ công cụ CLI thế hệ mới qua Homebrew...${NC}"
+# ------------------------------------------------------------------------------
+# [BƯỚC 3/6] CÀI ĐẶT BỘ CÔNG CỤ CLI RUST HIỆN ĐẠI (100% FREE)
+# ------------------------------------------------------------------------------
+echo -e "\n${CYAN}[3/6] Cài đặt Bộ công cụ CLI thế hệ mới qua Homebrew...${NC}"
 PACKAGES=("zoxide" "eza" "bat" "fzf" "ripgrep")
 TO_INSTALL=()
 for pkg in "${PACKAGES[@]}"; do
@@ -61,9 +138,10 @@ if [ ${#TO_INSTALL[@]} -gt 0 ]; then
     echo -e "  ${GREEN}✔ Đã cài đặt đầy đủ bộ công cụ CLI.${NC}"
 fi
 
-# 4. Kích hoạt Zero-Latency UI & Tối đa tốc độ bàn phím
-echo -e "\n${CYAN}[3/5] Triệt tiêu độ trễ macOS & Đẩy tốc độ gõ phím lên cực đại...${NC}"
-# Tốc độ lướt phím và xóa chữ siêu nhanh
+# ------------------------------------------------------------------------------
+# [BƯỚC 4/6] TỐI ƯU ZERO-LATENCY BÀN PHÍM VÀ HOẠT ẢNH HỆ THỐNG
+# ------------------------------------------------------------------------------
+echo -e "\n${CYAN}[4/6] Triệt tiêu độ trễ macOS & Tăng tốc độ bàn phím lên cực đại...${NC}"
 defaults write -g KeyRepeat -int 2
 defaults write -g InitialKeyRepeat -int 10
 
@@ -75,21 +153,21 @@ defaults write com.apple.dock autohide-time-modifier -float 0.15
 defaults write -g NSAutomaticWindowAnimationsEnabled -bool false
 defaults write com.apple.finder DisableAllAnimations -bool true
 
-# Áp dụng thay đổi tức thì
 killall Dock 2>/dev/null || true
 killall Finder 2>/dev/null || true
 echo -e "  ${GREEN}✔ Đã áp dụng: KeyRepeat = 2, InitialKeyRepeat = 10 (Nhanh gấp 6 lần).${NC}"
 echo -e "  ${GREEN}✔ Đã triệt tiêu delay Dock & Window animations (Zero-Latency).${NC}"
 
-# 5. Cài đặt kịch bản bảo trì tự động huynex-clean
-echo -e "\n${CYAN}[4/5] Cài đặt công cụ bảo trì 1-Click (huynex-clean)...${NC}"
+# ------------------------------------------------------------------------------
+# [BƯỚC 5/6] CÀI ĐẶT CÔNG CỤ BẢO TRÌ TỰ ĐỘNG (HUYNEX-CLEAN)
+# ------------------------------------------------------------------------------
+echo -e "\n${CYAN}[5/6] Cài đặt công cụ bảo trì 1-Click (huynex-clean)...${NC}"
 mkdir -p "$HOME/.local/bin"
 curl -fsSL https://raw.githubusercontent.com/huylinhhg/huynex-workstation/main/bin/huynex-clean -o "$HOME/.local/bin/huynex-clean"
 chmod +x "$HOME/.local/bin/huynex-clean"
 echo -e "  ${GREEN}✔ Đã cài đặt huynex-clean vào ~/.local/bin/huynex-clean${NC}"
 
-# 6. Cấu hình ~/.zshrc chuẩn Power-User
-echo -e "\n${CYAN}[5/5] Cấu hình Shell Profile (~/.zshrc)...${NC}"
+# Cấu hình ~/.zshrc chuẩn Power-User
 ZSHRC="$HOME/.zshrc"
 touch "$ZSHRC"
 
@@ -133,10 +211,14 @@ else
     echo -e "  ${GREEN}✔ Đã thêm cấu hình HuyNex vào ~/.zshrc${NC}"
 fi
 
-# 7. Cài đặt Antigravity Skill
+# ------------------------------------------------------------------------------
+# [BƯỚC 6/6] CÀI ĐẶT ANTIGRAVITY AI SKILL
+# ------------------------------------------------------------------------------
+echo -e "\n${CYAN}[6/6] Cài đặt kỹ năng AI Antigravity (poweruser-workstation)...${NC}"
 SKILL_DIR="$HOME/.gemini/config/skills/poweruser-workstation"
 mkdir -p "$SKILL_DIR"
 curl -fsSL https://raw.githubusercontent.com/huylinhhg/huynex-workstation/main/skill/SKILL.md -o "$SKILL_DIR/SKILL.md" 2>/dev/null || true
+echo -e "  ${GREEN}✔ Đã nạp kỹ năng AI vào ~/.gemini/config/skills/poweruser-workstation${NC}"
 
 # ==============================================================================
 # BÁO CÁO KẾT QUẢ HOÀN TẤT
@@ -144,12 +226,13 @@ curl -fsSL https://raw.githubusercontent.com/huylinhhg/huynex-workstation/main/s
 echo -e "\n${BLUE}=================================================================${NC}"
 echo -e "${GREEN}${BOLD}   ✨ NÂNG CẤP HOÀN TẤT - BẠN ĐÃ LÀ TOP 1% POWER-USER! ✨${NC}"
 echo -e "${BLUE}=================================================================${NC}"
-echo -e "${BOLD}Các cải tiến đã được kích hoạt trên máy của bạn (100% Free):${NC}"
-echo -e "  ${CYAN}1. Zero-Latency Bàn phím:${NC} Tốc độ lướt phím và xóa chữ nhanh gấp 6 lần."
-echo -e "  ${CYAN}2. Zero-Latency UI:${NC} Triệt tiêu hoàn toàn độ trễ xuất hiện của Dock & cửa sổ."
-echo -e "  ${CYAN}3. Kỷ nguyên CLI Rust:${NC} Dùng ${GREEN}z${NC} (nhảy thư mục), ${GREEN}ls${NC} (eza màu sắc/icon), ${GREEN}cat${NC} (bat highlight code), ${GREEN}grep${NC} (ripgrep siêu tốc)."
-echo -e "  ${CYAN}4. Bảo trì 1-Click:${NC} Gõ lệnh ${YELLOW}huynex-clean${NC} hoặc ${YELLOW}clean${NC} để dọn sạch máy trong 3s."
-echo -e "  ${CYAN}5. Antigravity AI Skill:${NC} Trong chat Antigravity, chỉ cần gõ ${YELLOW}\"Tối ưu máy\"${NC} là AI tự làm mọi việc."
+echo -e "${BOLD}Các cải tiến đột phá đã được kích hoạt trên máy của bạn (100% Free):${NC}"
+echo -e "  ${CYAN}1. TẮT TẬN GỐC TÁC VỤ NGẦM:${NC} Đã diệt sạch các tiến trình/daemon chạy ngầm 24/7 (Adobe, CleanMyMac, Updaters)."
+echo -e "  ${CYAN}2. Zero-Latency Bàn phím:${NC} Tốc độ lướt phím và xóa chữ nhanh gấp 6 lần."
+echo -e "  ${CYAN}3. Zero-Latency UI:${NC} Triệt tiêu hoàn toàn độ trễ xuất hiện của Dock & cửa sổ."
+echo -e "  ${CYAN}4. Kỷ nguyên CLI Rust:${NC} Dùng ${GREEN}z${NC} (nhảy thư mục), ${GREEN}ls${NC} (eza màu sắc/icon), ${GREEN}cat${NC} (bat highlight code), ${GREEN}grep${NC} (ripgrep siêu tốc)."
+echo -e "  ${CYAN}5. Bảo trì 1-Click:${NC} Gõ lệnh ${YELLOW}clean${NC} để dọn sạch rác và tác vụ ngầm trong 3s."
+echo -e "  ${CYAN}6. Antigravity AI Skill:${NC} Trong chat Antigravity, chỉ cần gõ ${YELLOW}\"Tối ưu máy\"${NC} là AI tự làm mọi việc."
 echo -e "${BLUE}=================================================================${NC}"
 echo -e "${YELLOW}${BOLD}👉 BƯỚC CUỐI CÙNG:${NC}"
 echo -e "  • Khởi động lại Terminal hoặc gõ: ${GREEN}source ~/.zshrc${NC} để dùng ngay các lệnh mới."

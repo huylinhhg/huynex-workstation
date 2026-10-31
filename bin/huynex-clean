@@ -18,8 +18,45 @@ echo -e "${BLUE}================================================================
 INITIAL_AVAIL=$(df -h / | awk 'NR==2 {print $4}')
 echo -e "${CYAN}→ Dung lượng SSD khả dụng ban đầu:${NC} ${YELLOW}$INITIAL_AVAIL${NC}\n"
 
-# 1. Clean Package Managers
-echo -e "${CYAN}[1/6] Dọn dẹp bộ nhớ đệm Package Managers (Brew, npm, pip)...${NC}"
+# 1. Kill Rogue Background Daemons & Processes (Adobe, CleanMyMac, Updaters)
+echo -e "${CYAN}[1/7] Quét & Tắt sạch các tác vụ/tiến trình chạy ngầm (Zero-Bloat)...${NC}"
+BLOAT_PROCESSES=(
+    "AdobeIPCBroker"
+    "CCLibrary"
+    "CoreSync"
+    "Adobe Desktop Service"
+    "AdobeCRDaemon"
+    "CleanMyMac4.HealthMonitor"
+    "CleanMyMac4.Menu"
+    "CleanMyMac X Updater"
+    "GoogleSoftwareUpdateAgent"
+    "coccoc_update"
+    "Microsoft AU Daemon"
+    "Microsoft Update Assistant"
+)
+
+KILLED_COUNT=0
+for proc in "${BLOAT_PROCESSES[@]}"; do
+    if pgrep -fi "$proc" &>/dev/null; then
+        pkill -9 -fi "$proc" 2>/dev/null || true
+        echo -e "  ✔ Đã tắt tiến trình ngầm: $proc"
+        ((KILLED_COUNT++)) || true
+    fi
+done
+
+# Clean persistent rogue LaunchAgents in user space
+for pattern in "com.macpaw.CleanMyMac*" "com.google.keystone*" "com.coccoc*" "com.adobe.*" "com.microsoft.update*"; do
+    for plist in "$HOME/Library/LaunchAgents"/$pattern.plist; do
+        if [ -f "$plist" ]; then
+            launchctl unload -w "$plist" 2>/dev/null || true
+            rm -f "$plist"
+            echo -e "  ✔ Đã gỡ bỏ LaunchAgent: $(basename "$plist")"
+        fi
+    done
+done
+
+# 2. Clean Package Managers
+echo -e "${CYAN}[2/7] Dọn dẹp bộ nhớ đệm Package Managers (Brew, npm, pip)...${NC}"
 if command -v brew &>/dev/null; then
     brew cleanup -s --prune=all &>/dev/null || true
     echo -e "  ✔ Homebrew cache cleaned"
@@ -33,20 +70,20 @@ if command -v pip3 &>/dev/null; then
     echo -e "  ✔ pip cache cleaned"
 fi
 
-# 2. Clean Xcode & Dev Caches
-echo -e "${CYAN}[2/6] Dọn dẹp cache phát triển (Xcode, build artifacts)...${NC}"
+# 3. Clean Xcode & Dev Caches
+echo -e "${CYAN}[3/7] Dọn dẹp cache phát triển (Xcode, build artifacts)...${NC}"
 if [ -d "$HOME/Library/Developer/Xcode/DerivedData" ]; then
     rm -rf "$HOME/Library/Developer/Xcode/DerivedData"/* 2>/dev/null || true
     echo -e "  ✔ Xcode DerivedData cleaned"
 fi
 
-# 3. Clean System Logs & Diagnostic Reports older than 7 days
-echo -e "${CYAN}[3/6] Dọn dẹp log và báo cáo lỗi cũ (>7 ngày)...${NC}"
+# 4. Clean System Logs & Diagnostic Reports older than 7 days
+echo -e "${CYAN}[4/7] Dọn dẹp log và báo cáo lỗi cũ (>7 ngày)...${NC}"
 find "$HOME/Library/Logs" -type f -mtime +7 -delete 2>/dev/null || true
 echo -e "  ✔ Old logs removed"
 
-# 4. Clean Application Caches & Temp files
-echo -e "${CYAN}[4/6] Dọn dẹp temp & cache của các ứng dụng đa phương tiện...${NC}"
+# 5. Clean Application Caches & Temp files
+echo -e "${CYAN}[5/7] Dọn dẹp temp & cache của các ứng dụng đa phương tiện...${NC}"
 # CapCut draft cache & media cache
 rm -rf "$HOME/Library/Containers/com.lemon.lvoverseas/Data/Library/Caches"/* 2>/dev/null || true
 # Zalo temp avatar / updates
@@ -56,13 +93,13 @@ rm -rf "$HOME/Library/Application Support/ZaloData/temp"/* 2>/dev/null || true
 rm -rf "$HOME/Library/Caches/Google/Chrome/Default/Media Cache"/* 2>/dev/null || true
 echo -e "  ✔ App caches purged"
 
-# 5. Clean .DS_Store files across HuyNex workspace
-echo -e "${CYAN}[5/6] Dọn dẹp file rác .DS_Store trong HuyNex...${NC}"
+# 6. Clean .DS_Store files across HuyNex workspace
+echo -e "${CYAN}[6/7] Dọn dẹp file rác .DS_Store trong HuyNex...${NC}"
 find "$HOME/HuyNex" -name ".DS_Store" -delete 2>/dev/null || true
 echo -e "  ✔ .DS_Store purged"
 
-# 6. Empty Trash
-echo -e "${CYAN}[6/6] Dọn sạch Thùng rác (.Trash)...${NC}"
+# 7. Empty Trash
+echo -e "${CYAN}[7/7] Dọn sạch Thùng rác (.Trash)...${NC}"
 rm -rf "$HOME/.Trash"/* 2>/dev/null || true
 echo -e "  ✔ Trash emptied"
 

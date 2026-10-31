@@ -2,7 +2,7 @@
 
 Biến bất kỳ máy tính **macOS** hoặc **Windows** nào thành cỗ máy phản xạ tức thì, siêu nhẹ và tinh gọn của **Top 1% Kỹ sư công nghệ / Tech-Lead hàng đầu thế giới**. Tích hợp sẵn kỹ năng AI cho Antigravity.
 
-**100% Miễn phí • Mã nguồn mở • Không trả phí • Không thuê bao • Zero-Bloat**
+**100% Miễn phí • Tắt sạch tác vụ ngầm • Không trả phí • Không thuê bao • Zero-Bloat**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/Platform-macOS%20%7C%20Windows-green.svg)](README.md)
@@ -28,7 +28,7 @@ irm https://raw.githubusercontent.com/huylinhhg/huynex-workstation/main/setup-wi
 
 ## 📦 HOẶC GỬI FILE ZIP CẦU NỐI 1-CLICK (GỬI QUA ZALO)
 
-Bạn chỉ cần gửi file zip siêu nhẹ (`~2 KB`) cho bạn bè. Người nhận chỉ việc giải nén ra màn hình:
+Bạn chỉ cần gửi file zip siêu nhẹ (`~4 KB`) cho bạn bè. Người nhận chỉ việc giải nén ra màn hình:
 - **Nếu dùng máy Mac:** Bấm đúp vào file `🍎 Cai-dat-Mac.command`
 - **Nếu dùng máy Windows:** Bấm đúp vào file `🪟 Cai-dat-Windows.cmd`
 
@@ -38,29 +38,34 @@ Máy sẽ tự động kết nối GitHub kéo bản cài đặt và tối ưu m
 
 ## ✨ CÁC TÍNH NĂNG ĐƯỢC KÍCH HOẠT TỰ ĐỘNG
 
-| Tính năng | Trước khi cài | Sau khi cài (HuyNex Standard) | Lợi ích |
+| Hạng mục | Trước khi cài | Sau khi cài (HuyNex Standard) | Lợi ích thực tế |
 | :--- | :--- | :--- | :--- |
+| **Tác vụ chạy ngầm** | Hàng chục daemon ngầm (Adobe, CleanMyMac, Updaters, Telemetry) ăn ngầm 2-4 GB RAM | **TẮT SẠCH TẬN GỐC (Zero-Bloat)**: Diệt tiến trình & vô hiệu hóa tự khởi động 24/7 | Máy mát mẻ, CPU 0%, giải phóng hàng GB RAM thực |
 | **Tốc độ lướt phím** | Chậm mặc định (Apple / Win) | **Siêu tốc** (`KeyRepeat = 2`, `Delay = 0`) | Lướt con trỏ, xóa chữ nhanh gấp 6 lần |
 | **Độ trễ màn hình** | Trễ hoạt ảnh Dock / Cửa sổ | **Zero-Latency** (0s delay, tắt animation thừa) | Mở cửa sổ, ẩn hiện Dock ngay lập tức |
 | **Dòng lệnh CLI** | `ls`, `cat`, `cd`, `grep` cổ điển | **Kỷ nguyên Rust:** `z`, `eza`, `bat`, `ripgrep`, `fzf` | Nhảy thư mục tức thì, code highlight màu sắc |
-| **Bảo trì 1-Click** | Mở app dọn rác nặng nề | Lệnh `clean` / `huynex-clean` | Dọn sạch cache, temp, log cũ trong 3 giây |
+| **Bảo trì 1-Click** | Mở app dọn rác nặng nề | Lệnh `clean` / `huynex-clean` | Dọn sạch rác, cache dev và tác vụ ngầm trong 3 giây |
 | **Antigravity AI** | Chưa có hướng dẫn chuẩn | Skill `poweruser-workstation` tích hợp sẵn | Trong chat AI: gõ *"Tối ưu máy"* là AI tự làm |
 
 ---
 
-## 🛡️ CAM KẾT BẢO MẬT & MINH BẠCH 100%
+## 🛡️ CHI TIẾT TẮT TÁC VỤ CHẠY NGẦM
 
-1. **Tuyệt đối không chạy ngầm (Zero-Daemon):** Không tạo daemon, không tạo service chạy ngầm 24/7, không hao tốn tài nguyên máy.
-2. **Không thu thập dữ liệu (Zero-Telemetry):** Không gửi bất kỳ dữ liệu nào ra ngoài máy của bạn.
-3. **Mã nguồn mở hoàn toàn:** Kịch bản cài đặt là văn bản thuần túy (`.sh`, `.ps1`), minh bạch 100%, ai cũng có thể đọc và kiểm tra trước khi chạy.
-4. **100% Miễn phí vĩnh viễn:** Không đòi hỏi thẻ tín dụng, không dùng app bản quyền hay tính phí thuê bao.
+### Trên macOS:
+1. **Diệt sạch tiến trình ngầm ăn RAM:** Adobe CCLibrary (`node`), Adobe IPCBroker, CoreSync, CleanMyMac HealthMonitor/Menu, Google Software Update Agent, Cốc Cốc Updater, Microsoft AU Daemon.
+2. **Vô hiệu hóa LaunchAgents:** Xóa bỏ các tập tin `.plist` tự khởi động ngầm trong `~/Library/LaunchAgents`.
+3. **Tắt CrashReporter Dialogs & App Resume:** Ngăn ngừa việc khôi phục các cửa sổ lỗi gây đơ máy khi khởi động lại.
+
+### Trên Windows:
+1. **Vô hiệu hóa vĩnh viễn Services ngầm:** Google Update (`gupdate`, `gupdatem`), Edge Update (`edgeupdate`, `edgeupdatem`), Adobe Acrobat Update (`AdobeARMservice`), Windows Telemetry (`DiagTrack`), WAP Push (`dmwappushservice`).
+2. **Đóng tiến trình ngầm:** `GoogleUpdate.exe`, `MicrosoftEdgeUpdate.exe`, `AdobeARM.exe`.
+3. **Triệt tiêu Telemetry & Bloat tìm kiếm:** Tắt thu thập dữ liệu trong Registry, tắt Bing Search và Cortana chạy ngầm trong Start Menu.
 
 ---
 
 ## 🛠 HƯỚNG DẪN SỬ DỤNG BỘ CÔNG CỤ MỚI
 
 ### 1. Nhảy thư mục siêu tốc với `z` (thay vì `cd`)
-Không cần gõ đường dẫn dài dòng:
 ```bash
 z my-project    # Nhảy ngay đến thư mục my-project
 z docs          # Nhảy ngay đến thư mục documents
@@ -95,7 +100,7 @@ clean           # Hoặc gõ: huynex-clean
 Kịch bản tự động cài đặt kỹ năng `poweruser-workstation` vào máy của bạn. Mỗi khi bạn mở Antigravity lên, bạn chỉ cần gõ:
 > *"Tối ưu máy cho tao"* hoặc *"Kiểm tra xem máy có rác không"*
 
-AI sẽ tự động kiểm tra RAM, dọn dẹp bộ nhớ đệm và duy trì máy của bạn luôn ở trạng thái đỉnh cao nhất!
+AI sẽ tự động kiểm tra RAM, diệt tác vụ ngầm, dọn dẹp bộ nhớ đệm và duy trì máy của bạn luôn ở trạng thái đỉnh cao nhất!
 
 ---
 

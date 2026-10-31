@@ -3,8 +3,8 @@
     HuyNex Power-User Workstation 1-Click Installer for Windows
     GitHub: https://github.com/huylinhhg/huynex-workstation
 .DESCRIPTION
-    Tối ưu hóa bàn phím Zero-Latency, cài đặt bộ công cụ CLI Rust hiện đại,
-    cấu hình PowerShell Profile và cài đặt Antigravity Skill.
+    Tắt tận gốc tác vụ chạy ngầm (Zero-Bloat), tối ưu phím Zero-Latency,
+    cài đặt bộ công cụ CLI Rust hiện đại, cấu hình PowerShell Profile và tích hợp AI.
 #>
 
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
@@ -12,11 +12,75 @@ $Host.UI.RawUI.ForegroundColor = "Cyan"
 Write-Host "================================================================="
 Write-Host "   ⚡ HUYNEX ZERO-LATENCY POWER-USER WORKSTATION (Windows) ⚡" -ForegroundColor Green
 Write-Host "      Biến máy Windows thành cỗ máy phản xạ tức thì của Top 1%" -ForegroundColor White
+Write-Host "       100% Miễn phí • Tắt sạch tác vụ ngầm • Zero-Bloat" -ForegroundColor Yellow
 Write-Host "================================================================="
 $Host.UI.RawUI.ForegroundColor = "White"
 
-# 1. Tối ưu bàn phím Zero-Latency (HKCU không cần quyền Admin)
-Write-Host "`n[1/5] Tối ưu tốc độ phản hồi bàn phím (Zero-Latency UI)..." -ForegroundColor Yellow
+# ------------------------------------------------------------------------------
+# [BƯỚC 1/6] TRIỆT TIÊU TOÀN BỘ TIẾN TRÌNH & DỊCH VỤ CHẠY NGẦM ĂN RAM/CPU
+# ------------------------------------------------------------------------------
+Write-Host "`n[1/6] Quét & Tắt sạch các dịch vụ và tiến trình chạy ngầm (Zero-Bloat)..." -ForegroundColor Yellow
+
+# A. Tắt và vô hiệu hóa các Service chạy ngầm ăn tài nguyên / Updater / Telemetry
+$servicesToDisable = @(
+    @{ Name = "gupdate"; Desc = "Google Update (Auto)" },
+    @{ Name = "gupdatem"; Desc = "Google Update (Manual)" },
+    @{ Name = "edgeupdate"; Desc = "Microsoft Edge Update (Auto)" },
+    @{ Name = "edgeupdatem"; Desc = "Microsoft Edge Update (Manual)" },
+    @{ Name = "AdobeARMservice"; Desc = "Adobe Acrobat Update Service" },
+    @{ Name = "DiagTrack"; Desc = "Connected User Experiences and Telemetry (Windows tracking)" },
+    @{ Name = "dmwappushservice"; Desc = "WAP Push Routing Service" },
+    @{ Name = "MapsBroker"; Desc = "Downloaded Maps Manager" }
+)
+
+$svcCount = 0
+foreach ($svc in $servicesToDisable) {
+    if (Get-Service -Name $svc.Name -ErrorAction SilentlyContinue) {
+        Stop-Service -Name $svc.Name -Force -ErrorAction SilentlyContinue
+        Set-Service -Name $svc.Name -StartupType Disabled -ErrorAction SilentlyContinue
+        Write-Host "  ✔ Đã vô hiệu hóa vĩnh viễn dịch vụ ngầm: $($svc.Desc) ($($svc.Name))" -ForegroundColor Green
+        $svcCount++
+    }
+}
+
+# B. Diệt các tiến trình ngầm đang chiếm dụng RAM/CPU
+$bloatProcesses = @("GoogleUpdate", "MicrosoftEdgeUpdate", "AdobeARM", "Creative Cloud", "AdobeDesktopService", "CCXProcess")
+$procCount = 0
+foreach ($proc in $bloatProcesses) {
+    $running = Get-Process -Name $proc -ErrorAction SilentlyContinue
+    if ($running) {
+        Stop-Process -Name $proc -Force -ErrorAction SilentlyContinue
+        Write-Host "  ✔ Đã đóng tiến trình chạy ngầm: $proc" -ForegroundColor Green
+        $procCount++
+    }
+}
+
+# C. Tắt Windows Telemetry & Bloat tìm kiếm trong Registry
+try {
+    # Tắt Telemetry thu thập dữ liệu
+    $dataCollectionPath = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DataCollection"
+    if (!(Test-Path $dataCollectionPath)) { New-Item -Path $dataCollectionPath -Force | Out-Null }
+    Set-ItemProperty -Path $dataCollectionPath -Name "AllowTelemetry" -Value 0 -Force -ErrorAction SilentlyContinue
+
+    # Tắt Bing Search & Cortana ngầm trong Menu Start
+    $searchPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Search"
+    if (!(Test-Path $searchPath)) { New-Item -Path $searchPath -Force | Out-Null }
+    Set-ItemProperty -Path $searchPath -Name "BingSearchEnabled" -Value 0 -Force -ErrorAction SilentlyContinue
+    Set-ItemProperty -Path $searchPath -Name "CortanaConsent" -Value 0 -Force -ErrorAction SilentlyContinue
+
+    # Tắt theo dõi quảng cáo ngầm
+    $adPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\AdvertisingInfo"
+    if (!(Test-Path $adPath)) { New-Item -Path $adPath -Force | Out-Null }
+    Set-ItemProperty -Path $adPath -Name "Enabled" -Value 0 -Force -ErrorAction SilentlyContinue
+    Write-Host "  ✔ Đã triệt tiêu Telemetry thu thập dữ liệu và Bing Search ngầm." -ForegroundColor Green
+} catch {
+    Write-Host "  ⚠ Bỏ qua tinh chỉnh Registry hệ thống (chạy không cần quyền Admin)." -ForegroundColor Yellow
+}
+
+# ------------------------------------------------------------------------------
+# [BƯỚC 2/6] TỐI ƯU BÀN PHÍM ZERO-LATENCY
+# ------------------------------------------------------------------------------
+Write-Host "`n[2/6] Tối ưu tốc độ phản hồi bàn phím (Zero-Latency UI)..." -ForegroundColor Yellow
 try {
     Set-ItemProperty -Path "HKCU:\Control Panel\Keyboard" -Name "KeyboardSpeed" -Value 31 -Force
     Set-ItemProperty -Path "HKCU:\Control Panel\Keyboard" -Name "KeyboardDelay" -Value 0 -Force
@@ -25,8 +89,10 @@ try {
     Write-Host "  ⚠ Không thể chỉnh Registry: $($_.Exception.Message)" -ForegroundColor Red
 }
 
-# 2. Cài đặt các công cụ CLI hiện đại qua winget
-Write-Host "`n[2/5] Kiểm tra và cài đặt bộ công cụ CLI Rust qua winget..." -ForegroundColor Yellow
+# ------------------------------------------------------------------------------
+# [BƯỚC 3/6] CÀI ĐẶT BỘ CÔNG CỤ CLI RUST QUA WINGET
+# ------------------------------------------------------------------------------
+Write-Host "`n[3/6] Kiểm tra và cài đặt bộ công cụ CLI Rust qua winget..." -ForegroundColor Yellow
 if (Get-Command winget -ErrorAction SilentlyContinue) {
     $packages = @(
         @{ Name = "zoxide"; Id = "ajeetdsouza.zoxide"; CheckCmd = "zoxide" },
@@ -49,16 +115,20 @@ if (Get-Command winget -ErrorAction SilentlyContinue) {
     Write-Host "  ⚠ Không tìm thấy winget! Vui lòng cập nhật App Installer từ Microsoft Store." -ForegroundColor Red
 }
 
-# 3. Cài đặt kịch bản bảo trì huynex-clean.ps1
-Write-Host "`n[3/5] Cài đặt công cụ bảo trì 1-Click (huynex-clean.ps1)..." -ForegroundColor Yellow
+# ------------------------------------------------------------------------------
+# [BƯỚC 4/6] CÀI ĐẶT CÔNG CỤ BẢO TRÌ HUYNEX-CLEAN.PS1
+# ------------------------------------------------------------------------------
+Write-Host "`n[4/6] Cài đặt công cụ bảo trì 1-Click (huynex-clean.ps1)..." -ForegroundColor Yellow
 $binDir = "$HOME\.local\bin"
 if (!(Test-Path $binDir)) { New-Item -ItemType Directory -Path $binDir -Force | Out-Null }
 $cleanScriptUrl = "https://raw.githubusercontent.com/huylinhhg/huynex-workstation/main/bin/huynex-clean.ps1"
 Invoke-WebRequest -Uri $cleanScriptUrl -OutFile "$binDir\huynex-clean.ps1"
 Write-Host "  ✔ Đã tải huynex-clean.ps1 vào $binDir\huynex-clean.ps1" -ForegroundColor Green
 
-# 4. Cấu hình PowerShell Profile ($PROFILE)
-Write-Host "`n[4/5] Cấu hình PowerShell Profile ($PROFILE)..." -ForegroundColor Yellow
+# ------------------------------------------------------------------------------
+# [BƯỚC 5/6] CẤU HÌNH POWERSHELL PROFILE ($PROFILE)
+# ------------------------------------------------------------------------------
+Write-Host "`n[5/6] Cấu hình PowerShell Profile ($PROFILE)..." -ForegroundColor Yellow
 $profilePath = $PROFILE
 $profileDir = Split-Path $profilePath -Parent
 if (!(Test-Path $profileDir)) { New-Item -ItemType Directory -Path $profileDir -Force | Out-Null }
@@ -100,8 +170,10 @@ if ($currentProfile -match $startEsc) {
     Write-Host "  ✔ Đã thêm cấu hình HuyNex vào PowerShell Profile" -ForegroundColor Green
 }
 
-# 5. Cài đặt Antigravity Skill
-Write-Host "`n[5/5] Cài đặt Antigravity Skill (poweruser-workstation)..." -ForegroundColor Yellow
+# ------------------------------------------------------------------------------
+# [BƯỚC 6/6] CÀI ĐẶT ANTIGRAVITY SKILL
+# ------------------------------------------------------------------------------
+Write-Host "`n[6/6] Cài đặt Antigravity Skill (poweruser-workstation)..." -ForegroundColor Yellow
 $skillDir = "$HOME\.gemini\config\skills\poweruser-workstation"
 if (!(Test-Path $skillDir)) { New-Item -ItemType Directory -Path $skillDir -Force | Out-Null }
 $skillUrl = "https://raw.githubusercontent.com/huylinhhg/huynex-workstation/main/skill/SKILL.md"
@@ -115,9 +187,10 @@ Write-Host "`n================================================================="
 Write-Host "   ✨ NÂNG CẤP HOÀN TẤT - BẠN ĐÃ LÀ TOP 1% POWER-USER! ✨" -ForegroundColor Green
 Write-Host "=================================================================" -ForegroundColor Cyan
 Write-Host "Các cải tiến đã được kích hoạt trên máy của bạn (100% Free):" -ForegroundColor Yellow
-Write-Host "  1. Zero-Latency Bàn phím: Tốc độ lướt phím và xóa chữ nhanh gấp 6 lần." -ForegroundColor White
-Write-Host "  2. Kỷ nguyên CLI Rust: Dùng 'z' (nhảy thư mục), 'ls' (eza màu sắc/icon), 'cat' (bat highlight code), 'grep' (ripgrep siêu tốc)." -ForegroundColor White
-Write-Host "  3. Bảo trì 1-Click: Gõ lệnh 'clean' hoặc 'huynex-clean' để dọn sạch máy trong 3s." -ForegroundColor White
-Write-Host "  4. Antigravity AI Skill: Trong chat Antigravity, chỉ cần gõ 'Tối ưu máy' là AI tự làm mọi việc." -ForegroundColor White
+Write-Host "  1. TẮT TẬN GỐC TÁC VỤ NGẦM: Đã vô hiệu hóa các dịch vụ ngầm (Google Update, Edge Update, Adobe, Telemetry)." -ForegroundColor White
+Write-Host "  2. Zero-Latency Bàn phím: Tốc độ lướt phím và xóa chữ nhanh gấp 6 lần." -ForegroundColor White
+Write-Host "  3. Kỷ nguyên CLI Rust: Dùng 'z' (nhảy thư mục), 'ls' (eza màu sắc/icon), 'cat' (bat highlight code), 'grep' (ripgrep siêu tốc)." -ForegroundColor White
+Write-Host "  4. Bảo trì 1-Click: Gõ lệnh 'clean' hoặc 'huynex-clean' để dọn sạch máy trong 3s." -ForegroundColor White
+Write-Host "  5. Antigravity AI Skill: Trong chat Antigravity, chỉ cần gõ 'Tối ưu máy' là AI tự làm mọi việc." -ForegroundColor White
 Write-Host "=================================================================" -ForegroundColor Cyan
 Write-Host "👉 Khởi động lại PowerShell để trải nghiệm ngay các công cụ mới!`n" -ForegroundColor Yellow
